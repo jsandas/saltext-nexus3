@@ -10,8 +10,11 @@ import logging
 
 import requests
 
-__opts__ = {}
-__salt__ = {}
+try:
+    import salt.config
+    __opts__ = salt.config.minion_config("/etc/salt/minion")
+except Exception:
+    __opts__ = {}
 
 log = logging.getLogger(__name__)
 
@@ -27,7 +30,7 @@ def _get_config():
                 'username': '',
                 'password': ''}
 
-    _opts = __salt__['config.option']('nexus3')
+    _opts = __opts__.get('nexus3', {})
     
     missing_args = []
     for attr in conn_info:

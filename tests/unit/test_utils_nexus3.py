@@ -9,11 +9,10 @@ class _DummyResponse:
 
 
 def _import_utils_module(monkeypatch, config_option_return):
-    fake_salt = {"config.option": lambda _name: config_option_return}
-
     sys.modules.pop("saltext.nexus3.utils.nexus3", None)
     mod = importlib.import_module("saltext.nexus3.utils.nexus3")
-    mod.__salt__ = fake_salt
+    mod.__opts__ = {"nexus3": config_option_return} if config_option_return else {}
+    mod.__pillar__ = {}
     return mod
 
 
