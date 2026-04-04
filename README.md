@@ -8,8 +8,6 @@ Install from source for development:
 
   pip install -e .
 
-The legacy file_root sync layout (`_modules`, `_states`, `_utils`) has been removed from this branch.
-
   Development commands:
 
     make test
@@ -21,8 +19,6 @@ The legacy file_root sync layout (`_modules`, `_states`, `_utils`) has been remo
   Docs:
 
   - [Installation](docs/topics/installation.md)
-  - [Migration](docs/topics/migration.md)
-  - [Deprecation Policy](docs/topics/deprecation-policy.md)
   - [API Modules Reference](docs/ref/modules.rst)
   - [API States Reference](docs/ref/states.rst)
 

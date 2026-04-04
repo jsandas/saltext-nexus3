@@ -18,9 +18,3 @@ Package-based installation enables:
 - Loader discovery from the extension package.
 - Reproducible dependency management.
 - CI parity with local development.
-
-## Legacy file_root layout status
-
-The legacy `_modules`, `_states`, and `_utils` file_root layout has been removed.
-
-If you are migrating from that layout, use package installation and loader entry points from `src/saltext/nexus3`.

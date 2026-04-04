@@ -83,9 +83,6 @@ docs-sphinx:
 changelog-draft:
 	@nox -e changelog
 
-sync-src:
-	@python3 ./bin/sync_legacy_to_src.py
-
 set-version:
 	@if [ -n "$(VERSION)" ]; then \
 		python3 ./bin/update_file_versions.py "$(VERSION)"; \

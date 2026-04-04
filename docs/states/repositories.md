@@ -158,6 +158,7 @@ nexus3_repositories.**present**(*name,format,type,apt_dist_name='bionic',apt_fla
 
     yum_repodata_depth (int):
         Specifies the repository depth where repodata folder(s) are created (Default: 0)
+
     .. code-block:: yaml
 
         create_repository:
