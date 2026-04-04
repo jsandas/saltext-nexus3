@@ -187,6 +187,8 @@ def verify(to):
     to (str):
         address to send test email to
 
+    CLI Example::
+
     .. code-block:: bash
 
         salt myminion nexus3_email.verify

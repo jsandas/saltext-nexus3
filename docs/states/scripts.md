@@ -53,6 +53,7 @@ nexus3_scripts.**task**(*name,typeId,taskProperties,cron,setAlertEmail=None*):
             Month           1-12 or JAN-DEC
             Dayofweek   1-7 or SUN-SAT
             Year(optional)      empty, 1970-2099
+
     Returns:
         str: metadata about task if successful
 

@@ -73,10 +73,10 @@ nexus3_email.**reset**(**):
 
 nexus3_email.**verify**(*to*):
 
-    CLI Example::
-
     to (str):
         address to send test email to
+
+    CLI Example::
 
     .. code-block:: bash
 
