@@ -1,0 +1,33 @@
+services:
+  salt-master:
+    image: saltstack/salt:3006.5
+    container_name: salt-master
+    ports:
+      - "4505:4505"
+      - "4506:4506"
+    environment: 
+      SALT_MASTER_CONFIG: '{"auto_accept": true}'
+    volumes:
+      - $PWD:/workspace
+      - $PWD/tests/files/salt/nexus3:/srv/salt/nexus3
+      - $PWD/tests/files/salt/pillar:/srv/pillar
+
+  salt-minion:
+    image: saltstack/salt:3006.5
+    container_name: salt-minion
+    environment: 
+      SALT_MINION_CONFIG: '{"id": "test.minion", "master": "salt-master", "nexus3": {"hostname": "http://nexus3:8081", "username": "admin", "password": "${NEXUS_PASSWORD}"}}'
+    volumes:
+      - $PWD:/workspace
+    links:
+      - salt-master:salt-master
+      - nexus3:nexus3
+
+  nexus3:
+    image: sonatype/nexus3:latest
+    container_name: nexus3
+    ports:
+      - "8081:8081"
+      - "5000:5000"
+    # volumes:
+    #   - $PWD/tests/files/nexus.properties:/nexus-data/etc/nexus.properties
