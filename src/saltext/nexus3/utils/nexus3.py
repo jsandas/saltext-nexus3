@@ -19,7 +19,7 @@ except Exception:
 
 log = logging.getLogger(__name__)
 
-base_api_path = "service/rest"
+BASE_API_PATH = "service/rest"
 
 
 # TODO: revisit the error handling

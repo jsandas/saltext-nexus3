@@ -29,7 +29,7 @@ __outputter__ = {
 PRIVILEGES_PATH = "v1/security/privileges"
 
 
-def create(
+def create(  # pylint: disable=invalid-name
     name,
     type,
     actions=[],
@@ -249,7 +249,7 @@ def list_all():
     return ret
 
 
-def update(
+def update(  # pylint: disable=invalid-name
     name,
     actions=None,
     contentSelector=None,

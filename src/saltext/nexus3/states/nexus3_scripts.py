@@ -205,7 +205,7 @@ def _script_processor(script_name, script_data, script_args, ret):
     return ret
 
 
-base_url_data = """
+BASE_URL_DATA = """
 import groovy.json.JsonSlurper
 
 parsedArgs = new JsonSlurper().parseText(args)
@@ -237,11 +237,11 @@ def base_url(name):
 
     script_args = {"baseUrl": name}
 
-    results = _script_processor(script_name, base_url_data, script_args, ret)
+    results = _script_processor(script_name, BASE_URL_DATA, script_args, ret)
     return results
 
 
-task_data = """
+TASK_DATA = """
 import groovy.json.JsonSlurper
 import org.sonatype.nexus.scheduling.TaskConfiguration
 import org.sonatype.nexus.scheduling.TaskInfo
@@ -279,7 +279,7 @@ taskScheduler.scheduleTask(taskConfiguration, schedule)
 """
 
 
-def task(name, typeId, taskProperties, cron, setAlertEmail=None):
+def task(name, typeId, taskProperties, cron, setAlertEmail=None):  # pylint: disable=invalid-name
     """
 
     name (str):

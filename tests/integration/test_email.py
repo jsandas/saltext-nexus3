@@ -18,8 +18,8 @@ def test_configure_email():
             "enabled=True",
             "host=notlocalhost",
             "port=587",
-            "fromAddress=test@example.com",
-            "startTlsEnabled=True",
+            "from_address=test@example.com",
+            "start_tls_enabled=True",
         ],
     )
 
@@ -28,9 +28,9 @@ def test_configure_email():
 
     assert ret["test.minion"]["email"]["port"] == 587, "port incorrect"
 
-    assert ret["test.minion"]["email"]["fromAddress"] == "test@example.com", "fromAddress incorrect"
+    assert ret["test.minion"]["email"]["from_address"] == "test@example.com", "from_address incorrect"
 
-    assert ret["test.minion"]["email"]["startTlsEnabled"] == True, "startTlsEnabled incorrect"
+    assert ret["test.minion"]["email"]["start_tls_enabled"] == True, "start_tls_enabled incorrect"
 
 
 def test_describe_email():
@@ -41,8 +41,8 @@ def test_describe_email():
             "enabled=True",
             "host=notlocalhost",
             "port=465",
-            "fromAddress=test@example.com",
-            "sslOnConnectEnabled=True",
+            "from_address=test@example.com",
+            "ssl_on_connect_enabled=True",
         ],
     )
 
@@ -53,8 +53,8 @@ def test_describe_email():
 
     assert ret["test.minion"]["email"]["port"] == 465, "port incorrect"
 
-    assert ret["test.minion"]["email"]["fromAddress"] == "test@example.com", "fromAddress incorrect"
+    assert ret["test.minion"]["email"]["from_address"] == "test@example.com", "from_address incorrect"
 
     assert (
-        ret["test.minion"]["email"]["sslOnConnectEnabled"] == True
-    ), "sslOnConnectEnabled incorrect"
+        ret["test.minion"]["email"]["ssl_on_connect_enabled"] == True
+    ), "ssl_on_connect_enabled incorrect"

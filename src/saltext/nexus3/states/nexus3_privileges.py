@@ -56,7 +56,7 @@ def absent(name):
     return ret
 
 
-def present(
+def present(  # pylint: disable=invalid-name
     name,
     type,
     actions=[],

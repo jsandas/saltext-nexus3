@@ -29,7 +29,7 @@ __outputter__ = {
 USERS_PATH = "v1/security/users"
 
 
-def create(
+def create(  # pylint: disable=invalid-name
     name, password, emailAddress, firstName, lastName, roles=["nx-anonymous"], status="active"
 ):
     """
@@ -184,7 +184,7 @@ def list_all():
     return ret
 
 
-def update(name, emailAddress=None, firstName=None, lastName=None, roles=None, status=None):
+def update(name, emailAddress=None, firstName=None, lastName=None, roles=None, status=None):  # pylint: disable=invalid-name
     """
     name (str):
         name of user

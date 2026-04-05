@@ -52,18 +52,18 @@ def clear(name):
     return ret
 
 
-def configure(
+def configure(  # pylint: disable=invalid-name
     name,
     enabled,
-    fromAddress="nexus@example.org",
+    from_address="nexus@example.org",
     host="localhost",
-    nexusTrustStoreEnabled=False,
+    nexus_trust_store_enabled=False,
     password=None,
     port=0,
-    sslOnConnectEnabled=False,
-    sslServerIdentityCheckEnabled=False,
-    startTlsEnabled=False,
-    startTlsRequired=False,
+    ssl_on_connect_enabled=False,
+    ssl_server_identity_check_enabled=False,
+    start_tls_enabled=False,
+    start_tls_required=False,
     subjectPrefix=None,
     username="",
 ):
@@ -77,13 +77,13 @@ def configure(
     enabled (bool):
         enable email support [True|False]
 
-    fromAddress (str):
+    from_address (str):
         mail from address (Default: nexus@example.org)
 
     host (string):
         smtp hostname (Default: localhost)
 
-    nexusTrustStoreEnabled (bool):
+    nexus_trust_store_enabled (bool):
         use nexus truststore [True|False] (Default: False)
         .. note::
             Ensure CA certificate is add to the Nexus trustore
@@ -94,23 +94,23 @@ def configure(
     port (int):
         smtp port (Default: 0)
 
-    sslOnConnectEnabled (bool):
+    ssl_on_connect_enabled (bool):
         connect using tls (SMTPS) (Default: False)
         .. note::
-            sslOnConnectEnabled and startTlsEnabled/startTlsRequired should be mutually exclusive
+            ssl_on_connect_enabled and start_tls_enabled/start_tls_required should be mutually exclusive
 
-    sslServerIdentityCheckEnabled (bool):
+    ssl_server_identity_check_enabled (bool):
         verify server certificate (Default: False)
 
-    startTlsEnabled (bool):
+    start_tls_enabled (bool):
         enable starttls (Default: False)
         .. note::
-            sslOnConnectEnabled and startTlsEnabled/startTlsRequired should be mutually exclusive
+            ssl_on_connect_enabled and start_tls_enabled/start_tls_required should be mutually exclusive
 
-    startTlsRequired (bool):
+    start_tls_required (bool):
         require starttls (Default: False)
         .. note::
-            sslOnConnectEnabled and startTlsEnabled/startTlsRequired should be mutually exclusive
+            ssl_on_connect_enabled and start_tls_enabled/start_tls_required should be mutually exclusive
 
 
     subjectPrefix (str):
@@ -126,8 +126,8 @@ def configure(
             - enabled: True
             - host: smtp@example.com
             - port: 587
-            - fromAddress: test@example.com
-            - startTlsEnabled: True
+            - from_address: test@example.com
+            - start_tls_enabled: True
     """
 
     ret = {"name": name, "changes": {}, "result": True, "comment": ""}
@@ -156,15 +156,15 @@ def configure(
 
         configure_results = __salt__["nexus3_email.configure"](
             enabled,
-            fromAddress,
+            from_address,
             host,
-            nexusTrustStoreEnabled,
+            nexus_trust_store_enabled,
             password,
             port,
-            sslOnConnectEnabled,
-            sslServerIdentityCheckEnabled,
-            startTlsEnabled,
-            startTlsRequired,
+            ssl_on_connect_enabled,
+            ssl_server_identity_check_enabled,
+            start_tls_enabled,
+            start_tls_required,
             subjectPrefix,
             username,
         )

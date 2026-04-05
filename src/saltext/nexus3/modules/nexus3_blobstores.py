@@ -34,14 +34,14 @@ def create(
     quota_type=None,
     quota_limit=1000000,
     store_type="file",
-    s3_accessKeyId="",
+    s3_access_key_id="",
     s3_bucket="nexus3",
     s3_endpoint="",
     s3_expiration=3,
-    s3_forcePathStyle=False,
+    s3_force_path_style=False,
     s3_prefix="",
     s3_region="Default",
-    s3_secretAccessKey="",
+    s3_secret_access_key="",
 ):
     """
     name (str):
@@ -61,7 +61,7 @@ def create(
     store_type (str):
         Type of blobstore [file|s3] (Default: file)
 
-    s3_accessKeyId (str):
+    s3_access_key_id (str):
         AWS Access Key for S3 bucket (Default: '')
 
     s3_bucket (str):
@@ -77,7 +77,7 @@ def create(
         .. note::
             set to -1 to disable
 
-    s3_forcePathStyle (bool):
+    s3_force_path_style (bool):
         force path style url format (Default: False)
         .. note:
             if using s3 compatible service like min.io, set this to True
@@ -85,7 +85,7 @@ def create(
     s3_region (str):
         Region of S3 bucket [us-east-1,us-east-2,us-west-1,us-west-2,etc] (Default: 'Default')
 
-    s3_secretAccessKey (str):
+    s3_secret_access_key (str):
         AWS Secret Access Key for S3 bucket (Default: '')
 
     CLI Example:
@@ -94,7 +94,7 @@ def create(
 
         salt myminion nexus3_blobstores.create name=myblobstore
         salt myminion nexus3_blobstores.create name=myblobstore quota_type=spaceRemainingQuota spaceRemainingQuota=5000000
-        salt myminion nexus3_blobstores.create name=mys3blobstore store_type=s3 s3_bucket=nexus3 s3_accessKeyId=AKIAIOSFODNN7EXAMPLE s3_secretAccessKey=wJalrXUtnFEMIK7MDENGbPxRfiCYEXAMPLEKEY s3_endpoint=http://minio:9000 s3_forcePathStyle=True
+        salt myminion nexus3_blobstores.create name=mys3blobstore store_type=s3 s3_bucket=nexus3 s3_access_key_id=AKIAIOSFODNN7EXAMPLE s3_secret_access_key=wJalrXUtnFEMIK7MDENGbPxRfiCYEXAMPLEKEY s3_endpoint=http://minio:9000 s3_force_path_style=True
     """
 
     ret = {
@@ -121,10 +121,10 @@ def create(
             "expiration": s3_expiration,
         }
 
-        if s3_accessKeyId != "" or s3_secretAccessKey != "":
+        if s3_access_key_id != "" or s3_secret_access_key != "":
             s3_config["bucketSecurity"] = {
-                "accessKeyId": s3_accessKeyId,
-                "secretAccessKey": s3_secretAccessKey,
+                "accessKeyId": s3_access_key_id,
+                "secretAccessKey": s3_secret_access_key,
                 # 'role': 'string',
                 # 'sessionToken': 'string'
             }
@@ -139,7 +139,7 @@ def create(
             s3_config["advancedBucketConnection"] = {
                 "endpoint": s3_endpoint,
                 "signerType": "DEFAULT",
-                "forcePathStyle": s3_forcePathStyle,
+                "forcePathStyle": s3_force_path_style,
             }
 
         payload["bucketConfiguration"] = s3_config
@@ -266,14 +266,14 @@ def update(
     name,
     quota_type=None,
     quota_limit=1000000,
-    s3_accessKeyId="",
+    s3_access_key_id="",
     s3_bucket="nexus3",
     s3_endpoint="",
     s3_expiration=3,
-    s3_forcePathStyle=False,
+    s3_force_path_style=False,
     s3_prefix="",
     s3_region="Default",
-    s3_secretAccessKey="",
+    s3_secret_access_key="",
 ):
     """
 
@@ -291,7 +291,7 @@ def update(
             The limit should be no less than 1000000 bytes (1 MB) otherwise
             it does not display properly in the UI.
 
-    s3_accessKeyId (str):
+    s3_access_key_id (str):
         AWS Access Key for S3 bucket (Default: '')
 
     s3_bucket (str):
@@ -307,7 +307,7 @@ def update(
         .. note::
             set to -1 to disable
 
-    s3_forcePathStyle (bool):
+    s3_force_path_style (bool):
         force path style url format (Default: False)
         .. note:
             if using s3 compatible service like min.io, set this to True
@@ -315,7 +315,7 @@ def update(
     s3_region (str):
         Region of S3 bucket [us-east-1,us-east-2,us-west-1,us-west-2,etc] (Default: 'Default')
 
-    s3_secretAccessKey (str):
+    s3_secret_access_key (str):
         AWS Secret Access Key for S3 bucket (Default: '')
 
     CLI Example:
@@ -323,7 +323,7 @@ def update(
     .. code-block:: bash
 
         salt myminion nexus3_blobstores.update name=myblobstore quota_type=spaceRemainingQuota quota_limit=5000000
-        salt myminion nexus3_blobstores.update name=mys3blobstore s3_bucket=nexus3 s3_accessKeyId=AKIAIOSFODNN7EXAMPLE s3_secretAccessKey=wJalrXUtnFEMIK7MDENGbPxRfiCYEXAMPLEKEY s3_endpoint=http://minio:9000 s3_forcePathStyle=True
+        salt myminion nexus3_blobstores.update name=mys3blobstore s3_bucket=nexus3 s3_access_key_id=AKIAIOSFODNN7EXAMPLE s3_secret_access_key=wJalrXUtnFEMIK7MDENGbPxRfiCYEXAMPLEKEY s3_endpoint=http://minio:9000 s3_force_path_style=True
     """
 
     ret = {"blobstore": {}}
@@ -351,10 +351,10 @@ def update(
             "expiration": s3_expiration,
         }
 
-        if s3_accessKeyId != "" or s3_secretAccessKey != "":
+        if s3_access_key_id != "" or s3_secret_access_key != "":
             s3_config["bucketSecurity"] = {
-                "accessKeyId": s3_accessKeyId,
-                "secretAccessKey": s3_secretAccessKey,
+                "accessKeyId": s3_access_key_id,
+                "secretAccessKey": s3_secret_access_key,
                 # 'role': 'string',
                 # 'sessionToken': 'string'
             }
@@ -369,7 +369,7 @@ def update(
             s3_config["advancedBucketConnection"] = {
                 "endpoint": s3_endpoint,
                 "signerType": "DEFAULT",
-                "forcePathStyle": s3_forcePathStyle,
+                "forcePathStyle": s3_force_path_style,
             }
 
         payload["bucketConfiguration"] = s3_config

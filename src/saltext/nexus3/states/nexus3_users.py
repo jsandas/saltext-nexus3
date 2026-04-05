@@ -58,7 +58,7 @@ def absent(name):
 
 # Dev Note: there may be a better way of handling create/update
 # without requiring input for each argument
-def present(
+def present(  # pylint: disable=invalid-name
     name, password, emailAddress, firstName, lastName, roles=["nx-anonymous"], status="active"
 ):
     """

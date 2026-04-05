@@ -8,10 +8,10 @@ nexus3:
     s3blobstore:
       - store_type: s3
       - s3_bucket: nexus3
-      - s3_accessKeyId: AKIAIOSFODNN7EXAMPLE
-      - s3_secretAccessKey: wJalrXUtnFEMIK7MDENGbPxRfiCYEXAMPLEKEY
+      - s3_access_key_id: AKIAIOSFODNN7EXAMPLE
+      - s3_secret_access_key: wJalrXUtnFEMIK7MDENGbPxRfiCYEXAMPLEKEY
       - s3_endpoint: http://minio:9000
-      - s3_forcePathStyle: True
+      - s3_force_path_style: True
     unwanted-blobstore:
       - quota_type: spaceRemainingQuota
       - quota_limit: 1000000000

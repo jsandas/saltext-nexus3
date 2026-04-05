@@ -29,17 +29,17 @@ __outputter__ = {
 EMAIL_PATH = "v1/email"
 
 
-def configure(
+def configure(  # pylint: disable=invalid-name
     enabled,
-    fromAddress="nexus@example.org",
+    from_address="nexus@example.org",
     host="localhost",
-    nexusTrustStoreEnabled=False,
+    nexus_trust_store_enabled=False,
     password=None,
     port=0,
-    sslOnConnectEnabled=False,
-    sslServerIdentityCheckEnabled=False,
-    startTlsEnabled=False,
-    startTlsRequired=False,
+    ssl_on_connect_enabled=False,
+    ssl_server_identity_check_enabled=False,
+    start_tls_enabled=False,
+    start_tls_required=False,
     subjectPrefix=None,
     username="",
 ):
@@ -47,13 +47,13 @@ def configure(
     enabled (bool):
         enable email support [True|False]
 
-    fromAddress (str):
+    from_address (str):
         mail from address (Default: nexus@example.org)
 
     host (string):
         smtp hostname (Default: localhost)
 
-    nexusTrustStoreEnabled (bool):
+    nexus_trust_store_enabled (bool):
         use nexus truststore [True|False] (Default: False)
         .. note::
             Ensure CA certificate is add to the Nexus trustore
@@ -64,20 +64,20 @@ def configure(
     port (int):
         smtp port (Default: 0)
 
-    sslOnConnectEnabled (bool):
+    ssl_on_connect_enabled (bool):
         connect using tls (SMTPS) (Default: False)
         .. note::
             tls_connect and starttls should be mutually exclusive
 
-    sslServerIdentityCheckEnabled (bool):
+    ssl_server_identity_check_enabled (bool):
         verify server certificate (Default: False)
 
-    startTlsEnabled (bool):
+    start_tls_enabled (bool):
         enable starttls (Default: False)
         .. note::
             tls_connect and starttls should be mutually exclusive
 
-    startTlsRequired (bool):
+    start_tls_required (bool):
         require starttls (Default: False)
         .. note::
             tls_connect and starttls should be mutually exclusive
@@ -105,13 +105,13 @@ def configure(
         "port": port,
         "username": username,
         "password": password,
-        "fromAddress": fromAddress,
+        "from_address": from_address,
         "subjectPrefix": subjectPrefix,
-        "startTlsEnabled": startTlsEnabled,
-        "startTlsRequired": startTlsRequired,
-        "sslOnConnectEnabled": sslOnConnectEnabled,
-        "sslServerIdentityCheckEnabled": sslServerIdentityCheckEnabled,
-        "nexusTrustStoreEnabled": nexusTrustStoreEnabled,
+        "start_tls_enabled": start_tls_enabled,
+        "start_tls_required": start_tls_required,
+        "ssl_on_connect_enabled": ssl_on_connect_enabled,
+        "ssl_server_identity_check_enabled": ssl_server_identity_check_enabled,
+        "nexus_trust_store_enabled": nexus_trust_store_enabled,
     }
 
     nc = nexus3.NexusClient()

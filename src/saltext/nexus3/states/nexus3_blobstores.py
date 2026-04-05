@@ -69,14 +69,14 @@ def present(
     quota_type=None,
     quota_limit=1000000,
     store_type="file",
-    s3_accessKeyId="",
+    s3_access_key_id="",
     s3_bucket="nexus3",
     s3_endpoint="",
     s3_expiration=3,
-    s3_forcePathStyle=False,
+    s3_force_path_style=False,
     s3_prefix="",
     s3_region="Default",
-    s3_secretAccessKey="",
+    s3_secret_access_key="",
 ):
     """
     name (str):
@@ -91,7 +91,7 @@ def present(
             The limit should be no less than 1000000 bytes (1 MB) otherwise
             it does not display properly in the UI.
 
-    s3_accessKeyId (str):
+    s3_access_key_id (str):
         AWS Access Key for S3 bucket (Default: '')
 
     s3_bucket (str):
@@ -107,7 +107,7 @@ def present(
         .. note::
             set to -1 to disable
 
-    s3_forcePathStyle (bool):
+    s3_force_path_style (bool):
         force path style url format (Default: False)
         .. note:
             if using s3 compatible service like min.io, set this to True
@@ -115,7 +115,7 @@ def present(
     s3_region (str):
         Region of S3 bucket [us-east-1,us-east-2,us-west-1,us-west-2,etc] (Default: 'Default')
 
-    s3_secretAccessKey (str):
+    s3_secret_access_key (str):
         AWS Secret Access Key for S3 bucket (Default: '')
 
     .. code-block:: yaml
@@ -135,8 +135,8 @@ def present(
           nexus3_blobstores.present:
             - store_type: s3
             - s3_bucket: nexus3
-            - s3_accessKeyId: AKIAIOSFODNN7EXAMPLE
-            - s3_secretAccessKey: wJalrXUtnFEMIK7MDENGbPxRfiCYEXAMPLEKEY
+            - s3_access_key_id: AKIAIOSFODNN7EXAMPLE
+            - s3_secret_access_key: wJalrXUtnFEMIK7MDENGbPxRfiCYEXAMPLEKEY
     """
 
     ret = {"name": name, "changes": {}, "result": True, "comment": ""}
@@ -160,14 +160,14 @@ def present(
             quota_type,
             quota_limit,
             store_type,
-            s3_accessKeyId,
+            s3_access_key_id,
             s3_bucket,
             s3_endpoint,
             s3_expiration,
-            s3_forcePathStyle,
+            s3_force_path_style,
             s3_prefix,
             s3_region,
-            s3_secretAccessKey,
+            s3_secret_access_key,
         )
         if "error" in create_results.keys():
             ret["result"] = False
@@ -219,16 +219,16 @@ def present(
                 updates["s3_expiration"] = s3_expiration
                 is_update = True
 
-            if s3_config["bucketSecurity"]["accessKeyId"] != s3_accessKeyId:
-                updates["s3_accessKeyId"] = s3_accessKeyId
+            if s3_config["bucketSecurity"]["accessKeyId"] != s3_access_key_id:
+                updates["s3_access_key_id"] = s3_access_key_id
                 is_update = True
 
             if s3_config["advancedBucketConnection"]["endpoint"] != s3_endpoint:
                 updates["s3_endpoint"] = s3_endpoint
                 is_update = True
 
-            if s3_config["advancedBucketConnection"]["forcePathStyle"] != s3_forcePathStyle:
-                updates["s3_forcePathStyle"] = s3_forcePathStyle
+            if s3_config["advancedBucketConnection"]["forcePathStyle"] != s3_force_path_style:
+                updates["s3_force_path_style"] = s3_force_path_style
                 is_update = True
 
         if __opts__["test"]:
@@ -244,14 +244,14 @@ def present(
                 name,
                 quota_type,
                 quota_limit,
-                s3_accessKeyId,
+                s3_access_key_id,
                 s3_bucket,
                 s3_endpoint,
                 s3_expiration,
-                s3_forcePathStyle,
+                s3_force_path_style,
                 s3_prefix,
                 s3_region,
-                s3_secretAccessKey,
+                s3_secret_access_key,
             )
             if "error" in update_results.keys():
                 ret["result"] = False
