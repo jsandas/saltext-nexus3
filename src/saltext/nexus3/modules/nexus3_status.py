@@ -26,7 +26,7 @@ __outputter__ = {
     "highstate": "highstate",
 }
 
-status_path = "v1/status"
+STATUS_PATH = "v1/status"
 
 
 def check():
@@ -44,7 +44,7 @@ def check():
         "status": {},
     }
 
-    path = status_path + "/check"
+    path = STATUS_PATH + "/check"
 
     nc = nexus3.NexusClient()
 

@@ -27,7 +27,7 @@ __outputter__ = {
     "highstate": "highstate",
 }
 
-repo_base_path = "v1/repositories"
+REPO_BASE_PATH = "v1/repositories"
 
 
 def _format_url_string(format):
@@ -144,11 +144,11 @@ def group(
     nc = nexus3.NexusClient()
 
     if update:
-        update_path = repo_base_path + "/" + format_url_string + "/group/" + name
+        update_path = REPO_BASE_PATH + "/" + format_url_string + "/group/" + name
         resp = nc.put(update_path, payload)
         ret["comment"] = f"updated repository {name}."
     else:
-        create_path = repo_base_path + "/" + format_url_string + "/group"
+        create_path = REPO_BASE_PATH + "/" + format_url_string + "/group"
         resp = nc.post(create_path, payload)
         ret["comment"] = f"created repository {name}."
 
@@ -329,11 +329,11 @@ def hosted(
     nc = nexus3.NexusClient()
 
     if update:
-        update_path = repo_base_path + "/" + format_url_string + "/hosted/" + name
+        update_path = REPO_BASE_PATH + "/" + format_url_string + "/hosted/" + name
         resp = nc.put(update_path, payload)
         ret["comment"] = f"updated repository {name}."
     else:
-        create_path = repo_base_path + "/" + format_url_string + "/hosted"
+        create_path = REPO_BASE_PATH + "/" + format_url_string + "/hosted"
         resp = nc.post(create_path, payload)
         ret["comment"] = f"created repository {name}."
 
@@ -648,11 +648,11 @@ def proxy(
     nc = nexus3.NexusClient()
 
     if update:
-        update_path = repo_base_path + "/" + format_url_string + "/proxy/" + name
+        update_path = REPO_BASE_PATH + "/" + format_url_string + "/proxy/" + name
         resp = nc.put(update_path, payload)
         ret["comment"] = f"updated repository {name}."
     else:
-        create_path = repo_base_path + "/" + format_url_string + "/proxy"
+        create_path = REPO_BASE_PATH + "/" + format_url_string + "/proxy"
         resp = nc.post(create_path, payload)
         ret["comment"] = f"created repository {name}."
 
@@ -683,7 +683,7 @@ def delete(name):
 
     ret = {"comment": f"Repository {name} deleted"}
 
-    delete_path = repo_base_path + "/" + name
+    delete_path = REPO_BASE_PATH + "/" + name
 
     nc = nexus3.NexusClient()
     resp = nc.delete(delete_path)

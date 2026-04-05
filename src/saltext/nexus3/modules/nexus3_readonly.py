@@ -26,7 +26,7 @@ __outputter__ = {
     "highstate": "highstate",
 }
 
-read_only_path = "v1/read-only"
+READ_ONLY_PATH = "v1/read-only"
 
 
 def describe():
@@ -43,7 +43,7 @@ def describe():
         "read-only": {},
     }
 
-    path = read_only_path
+    path = READ_ONLY_PATH
 
     nc = nexus3.NexusClient()
 
@@ -78,11 +78,11 @@ def enabled(state, force_release=False):
     }
 
     if state:
-        path = read_only_path + "/freeze"
+        path = READ_ONLY_PATH + "/freeze"
     elif force_release:
-        path = read_only_path + "/force_release"
+        path = READ_ONLY_PATH + "/force_release"
     else:
-        path = read_only_path + "/release"
+        path = READ_ONLY_PATH + "/release"
 
     nc = nexus3.NexusClient()
 

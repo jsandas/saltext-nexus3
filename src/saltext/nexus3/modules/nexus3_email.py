@@ -26,7 +26,7 @@ __outputter__ = {
     "highstate": "highstate",
 }
 
-email_path = "v1/email"
+EMAIL_PATH = "v1/email"
 
 
 def configure(
@@ -115,7 +115,7 @@ def configure(
     }
 
     nc = nexus3.NexusClient()
-    resp = nc.put(email_path, payload)
+    resp = nc.put(EMAIL_PATH, payload)
 
     if resp["status"] != 204:
         ret["comment"] = "could not to configure emails settings."
@@ -141,7 +141,7 @@ def describe():
     ret = {"email": {}}
 
     nc = nexus3.NexusClient()
-    resp = nc.get(email_path)
+    resp = nc.get(EMAIL_PATH)
 
     if resp["status"] == 200:
         ret["email"] = json.loads(resp["body"])
@@ -165,7 +165,7 @@ def reset():
     ret = {}
 
     nc = nexus3.NexusClient()
-    resp = nc.delete(email_path)
+    resp = nc.delete(EMAIL_PATH)
 
     if resp["status"] == 204:
         ret["comment"] = "email settings reset"
@@ -189,7 +189,7 @@ def verify(to):
     """
     ret = {}
 
-    verify_path = email_path + "/verify"
+    verify_path = EMAIL_PATH + "/verify"
 
     nc = nexus3.NexusClient()
     resp = nc.post(verify_path, to)

@@ -26,7 +26,7 @@ __outputter__ = {
     "highstate": "highstate",
 }
 
-roles_path = "v1/security/roles"
+ROLES_PATH = "v1/security/roles"
 
 
 def create(name, description="", privileges=[], roles=[]):
@@ -54,7 +54,7 @@ def create(name, description="", privileges=[], roles=[]):
         "role": {},
     }
 
-    path = roles_path
+    path = ROLES_PATH
 
     payload = {
         "id": name,
@@ -90,7 +90,7 @@ def delete(name):
     """
     ret = {}
 
-    path = roles_path + "/" + name
+    path = ROLES_PATH + "/" + name
     nc = nexus3.NexusClient()
 
     resp = nc.delete(path)
@@ -120,7 +120,7 @@ def describe(name):
         "role": {},
     }
 
-    path = roles_path + "/" + name
+    path = ROLES_PATH + "/" + name
     nc = nexus3.NexusClient()
 
     resp = nc.get(path)
@@ -148,7 +148,7 @@ def list_all():
         "roles": {},
     }
 
-    path = roles_path
+    path = ROLES_PATH
     nc = nexus3.NexusClient()
 
     resp = nc.get(path)
@@ -189,7 +189,7 @@ def update(name, description=None, privileges=None, roles=None):
 
     meta = describe(name)["role"]
 
-    path = roles_path + "/" + name
+    path = ROLES_PATH + "/" + name
 
     if description is not None:
         meta["description"] = description

@@ -26,7 +26,7 @@ __outputter__ = {
     "highstate": "highstate",
 }
 
-anon_access_path = "v1/security/anonymous"
+ANON_ACCESS_PATH = "v1/security/anonymous"
 
 
 def describe():
@@ -45,7 +45,7 @@ def describe():
 
     nc = nexus3.NexusClient()
 
-    resp = nc.get(anon_access_path)
+    resp = nc.get(ANON_ACCESS_PATH)
 
     if resp["status"] == 200:
         ret["anonymous_access"] = json.loads(resp["body"])
@@ -78,7 +78,7 @@ def enable(enabled):
 
     nc = nexus3.NexusClient()
 
-    resp = nc.put(anon_access_path, payload)
+    resp = nc.put(ANON_ACCESS_PATH, payload)
 
     if resp["status"] == 200:
         ret["anonymous_access"] = json.loads(resp["body"])

@@ -26,7 +26,7 @@ __outputter__ = {
     "highstate": "highstate",
 }
 
-blobstore_path = "v1/blobstores"
+BLOBSTORE_PATH = "v1/blobstores"
 
 
 def create(
@@ -101,7 +101,7 @@ def create(
         "blobstore": {},
     }
 
-    path = f"{blobstore_path}/{store_type}"
+    path = f"{BLOBSTORE_PATH}/{store_type}"
 
     payload = {
         "name": name,
@@ -180,7 +180,7 @@ def delete(name):
 
     ret = {"comment": f'Deleted blobstore "{name}"'}
 
-    path = f"{blobstore_path}/{name}"
+    path = f"{BLOBSTORE_PATH}/{name}"
 
     nc = nexus3.NexusClient()
     resp = nc.delete(path)
@@ -224,7 +224,7 @@ def describe(name):
             break
 
     if ret["blobstore"]:
-        path = "{}/{}/{}".format(blobstore_path, ret["blobstore"]["type"].lower(), name)
+        path = "{}/{}/{}".format(BLOBSTORE_PATH, ret["blobstore"]["type"].lower(), name)
 
         nc = nexus3.NexusClient()
         resp = nc.get(path)
@@ -251,7 +251,7 @@ def list_all():
     ret = {"blobstores": {}}
 
     nc = nexus3.NexusClient()
-    resp = nc.get(blobstore_path)
+    resp = nc.get(BLOBSTORE_PATH)
 
     if resp["status"] == 200:
         ret["blobstores"] = json.loads(resp["body"])
@@ -377,7 +377,7 @@ def update(
     if quota_type is not None:
         payload["softQuota"] = {"type": quota_type, "limit": quota_limit}
 
-    path = "{}/{}/{}".format(blobstore_path, metadata["blobstore"]["type"].lower(), name)
+    path = "{}/{}/{}".format(BLOBSTORE_PATH, metadata["blobstore"]["type"].lower(), name)
 
     nc = nexus3.NexusClient()
 

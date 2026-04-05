@@ -26,7 +26,7 @@ __outputter__ = {
     "highstate": "highstate",
 }
 
-tasks_path = "v1/tasks"
+TASKS_PATH = "v1/tasks"
 
 
 def describe(id):
@@ -45,7 +45,7 @@ def describe(id):
         "task": {},
     }
 
-    path = tasks_path + "/" + id
+    path = TASKS_PATH + "/" + id
 
     nc = nexus3.NexusClient()
 
@@ -77,7 +77,7 @@ def list_all():
         "tasks": {},
     }
 
-    path = tasks_path
+    path = TASKS_PATH
 
     nc = nexus3.NexusClient()
 
@@ -108,7 +108,7 @@ def run(id):
         "task": {},
     }
 
-    path = tasks_path + "/" + id + "/run"
+    path = TASKS_PATH + "/" + id + "/run"
 
     nc = nexus3.NexusClient()
 
@@ -146,7 +146,7 @@ def stop(id):
         "task": {},
     }
 
-    path = tasks_path + "/" + id + "/run"
+    path = TASKS_PATH + "/" + id + "/run"
 
     nc = nexus3.NexusClient()
 

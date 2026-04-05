@@ -26,7 +26,7 @@ __outputter__ = {
     "highstate": "highstate",
 }
 
-privileges_path = "v1/security/privileges"
+PRIVILEGES_PATH = "v1/security/privileges"
 
 
 def create(
@@ -94,7 +94,7 @@ def create(
 
     ret = {"privilege": {}}
 
-    path = privileges_path + "/" + type
+    path = PRIVILEGES_PATH + "/" + type
 
     payload = {
         "name": name,
@@ -176,7 +176,7 @@ def delete(name):
 
     ret = {}
 
-    path = privileges_path + "/" + name
+    path = PRIVILEGES_PATH + "/" + name
 
     nc = nexus3.NexusClient()
 
@@ -207,7 +207,7 @@ def describe(name):
         "privilege": {},
     }
 
-    path = privileges_path + "/" + name
+    path = PRIVILEGES_PATH + "/" + name
     nc = nexus3.NexusClient()
 
     resp = nc.get(path)
@@ -235,7 +235,7 @@ def list_all():
         "privileges": {},
     }
 
-    path = privileges_path
+    path = PRIVILEGES_PATH
     nc = nexus3.NexusClient()
 
     resp = nc.get(path)
@@ -316,7 +316,7 @@ def update(
 
     meta = priv_description["privilege"]
 
-    path = privileges_path + "/" + meta["type"] + "/" + name
+    path = PRIVILEGES_PATH + "/" + meta["type"] + "/" + name
 
     if actions is not None:
         meta["actions"] = actions
