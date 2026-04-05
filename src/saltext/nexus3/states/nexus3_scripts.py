@@ -162,10 +162,10 @@ def _connection_info():
     _opts = __salt__["config.option"]("nexus3")
 
     missing_args = []
-    for attr in conn_info:
+    for attr, default_value in conn_info.items():
         if attr not in _opts:
-            if conn_info[attr]:
-                log.warning(f"Used default value for nexus3 {attr}: {conn_info[attr]}")
+            if default_value:
+                log.warning(f"Used default value for nexus3 {attr}: {default_value}")
                 continue
             missing_args.append(attr)
             continue

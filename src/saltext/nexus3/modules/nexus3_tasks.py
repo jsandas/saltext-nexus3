@@ -29,23 +29,23 @@ __outputter__ = {
 TASKS_PATH = "v1/tasks"
 
 
-def describe(id):
+def describe(task_id):
     """
-    id (str):
+    task_id (str):
         task id
 
     CLI Example:
 
     .. code-block:: bash
 
-        salt myminion nexus3_tasks.describe id=512be2c3-aa04-448f-b0ce-2047eee34903
+        salt myminion nexus3_tasks.describe task_id=512be2c3-aa04-448f-b0ce-2047eee34903
     """
 
     ret = {
         "task": {},
     }
 
-    path = TASKS_PATH + "/" + id
+    path = TASKS_PATH + "/" + task_id
 
     nc = nexus3.NexusClient()
 
@@ -54,7 +54,7 @@ def describe(id):
     if resp["status"] == 200:
         ret["task"] = json.loads(resp["body"])
     else:
-        ret["comment"] = f"could not get task: {id}"
+        ret["comment"] = f"could not get task: {task_id}"
         ret["error"] = {"code": resp["status"], "msg": resp["body"]}
 
     return ret
@@ -92,32 +92,32 @@ def list_all():
     return ret
 
 
-def run(id):
+def run(task_id):
     """
-    id (str):
+    task_id (str):
         task id
 
     CLI Example:
 
     .. code-block:: bash
 
-        salt myminion nexus3_tasks.run id=512be2c3-aa04-448f-b0ce-2047eee34903
+        salt myminion nexus3_tasks.run task_id=512be2c3-aa04-448f-b0ce-2047eee34903
     """
 
     ret = {
         "task": {},
     }
 
-    path = TASKS_PATH + "/" + id + "/run"
+    path = TASKS_PATH + "/" + task_id + "/run"
 
     nc = nexus3.NexusClient()
 
     resp = nc.post(path, None)
 
     if resp["status"] == 204:
-        ret["task"] = f"ran task: {id}"
+        ret["task"] = f"ran task: {task_id}"
     else:
-        ret["comment"] = f"could not run task: {id}"
+        ret["comment"] = f"could not run task: {task_id}"
         if resp["status"] == 404:
             msg = "task not found"
         elif resp["status"] == 405:
@@ -130,32 +130,32 @@ def run(id):
     return ret
 
 
-def stop(id):
+def stop(task_id):
     """
-    id (str):
+    task_id (str):
         task id
 
     CLI Example:
 
     .. code-block:: bash
 
-        salt myminion nexus3_tasks.stop id=512be2c3-aa04-448f-b0ce-2047eee34903
+        salt myminion nexus3_tasks.stop task_id=512be2c3-aa04-448f-b0ce-2047eee34903
     """
 
     ret = {
         "task": {},
     }
 
-    path = TASKS_PATH + "/" + id + "/run"
+    path = TASKS_PATH + "/" + task_id + "/run"
 
     nc = nexus3.NexusClient()
 
     resp = nc.post(path, None)
 
     if resp["status"] == 204:
-        ret["task"] = f"stopped task: {id}"
+        ret["task"] = f"stopped task: {task_id}"
     else:
-        ret["comment"] = f"could not stop task: {id}"
+        ret["comment"] = f"could not stop task: {task_id}"
         if resp["status"] == 404:
             msg = "task not found"
         elif resp["status"] == 405:
