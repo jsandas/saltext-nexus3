@@ -20,6 +20,7 @@ except Exception:
 log = logging.getLogger(__name__)
 
 BASE_API_PATH = "service/rest"
+REQUEST_TIMEOUT = 30
 
 
 # TODO: revisit the error handling
@@ -68,7 +69,9 @@ class NexusClient:
         ret = {"status": -1, "body": {}}
 
         try:
-            resp = requests.delete(delete_path, auth=(self.username, self.password))
+            resp = requests.delete(
+                delete_path, auth=(self.username, self.password), timeout=REQUEST_TIMEOUT
+            )
             log.debug(f"NexusClient Request: {delete_path} {resp.status_code}")
             ret["status"] = resp.status_code
             ret["body"] = resp.content
@@ -87,7 +90,9 @@ class NexusClient:
         ret = {"status": -1, "body": {}}
 
         try:
-            resp = requests.get(get_path, auth=(self.username, self.password))
+            resp = requests.get(
+                get_path, auth=(self.username, self.password), timeout=REQUEST_TIMEOUT
+            )
             log.debug(f"NexusClient Request: {get_path} {resp.status_code}")
             ret["status"] = resp.status_code
             ret["body"] = resp.content
@@ -114,7 +119,11 @@ class NexusClient:
 
         try:
             resp = requests.post(
-                post_path, auth=(self.username, self.password), headers=headers, data=payload
+                post_path,
+                auth=(self.username, self.password),
+                headers=headers,
+                data=payload,
+                timeout=REQUEST_TIMEOUT,
             )
             log.debug(f"NexusClient Request: {post_path} {resp.status_code}")
             ret["status"] = resp.status_code
@@ -142,7 +151,11 @@ class NexusClient:
 
         try:
             resp = requests.put(
-                put_path, auth=(self.username, self.password), headers=headers, data=payload
+                put_path,
+                auth=(self.username, self.password),
+                headers=headers,
+                data=payload,
+                timeout=REQUEST_TIMEOUT,
             )
             log.debug(f"NexusClient Request: {put_path} {resp.status_code}")
             ret["status"] = resp.status_code

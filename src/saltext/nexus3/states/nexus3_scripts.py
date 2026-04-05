@@ -36,6 +36,8 @@ import requests
 
 log = logging.getLogger(__name__)
 
+REQUEST_TIMEOUT = 30
+
 
 class _ScriptClient:
     """
@@ -59,7 +61,9 @@ class _ScriptClient:
         resp = False
         if self.get():
             log.debug(f"Deleting script: {self.script_name}")
-            req = requests.delete(delete_url, auth=(self.username, self.password))
+            req = requests.delete(
+                delete_url, auth=(self.username, self.password), timeout=REQUEST_TIMEOUT
+            )
             if req.status_code == 204:
                 resp = req.content
                 return resp
@@ -76,7 +80,9 @@ class _ScriptClient:
         resp = False
         try:
             log.debug(f"checking for script {self.script_name}")
-            req = requests.get(get_url, auth=(self.username, self.password))
+            req = requests.get(
+                get_url, auth=(self.username, self.password), timeout=REQUEST_TIMEOUT
+            )
             if req.status_code == 200:
                 resp = req.content
                 return resp
@@ -87,7 +93,7 @@ class _ScriptClient:
         return resp
 
     def list(self):
-        req = requests.get(self.url, auth=(self.username, self.password))
+        req = requests.get(self.url, auth=(self.username, self.password), timeout=REQUEST_TIMEOUT)
         resp = req.content
 
         return resp
@@ -108,7 +114,11 @@ class _ScriptClient:
         if self.get():
             log.debug(f"running script: {self.script_name}")
             req = requests.post(
-                run_url, auth=(self.username, self.password), headers=headers, data=payload
+                run_url,
+                auth=(self.username, self.password),
+                headers=headers,
+                data=payload,
+                timeout=REQUEST_TIMEOUT,
             )
             if req.status_code == 200:
                 resp = req.json()
@@ -134,7 +144,11 @@ class _ScriptClient:
             log.debug(f"updating script: {self.script_name}")
             upload_url = f"{self.url}/{self.script_name}"
             req = requests.put(
-                upload_url, auth=(self.username, self.password), headers=headers, data=payload
+                upload_url,
+                auth=(self.username, self.password),
+                headers=headers,
+                data=payload,
+                timeout=REQUEST_TIMEOUT,
             )
             if req.status_code == 204:
                 resp = True
@@ -143,7 +157,11 @@ class _ScriptClient:
         else:
             log.debug(f"uploading script: {self.script_name}")
             req = requests.post(
-                self.url, auth=(self.username, self.password), headers=headers, data=payload
+                self.url,
+                auth=(self.username, self.password),
+                headers=headers,
+                data=payload,
+                timeout=REQUEST_TIMEOUT,
             )
             if req.status_code == 204:
                 resp = True
