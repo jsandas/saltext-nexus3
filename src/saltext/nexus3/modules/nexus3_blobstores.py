@@ -212,7 +212,7 @@ def describe(name):
 
     resp = list_all()
 
-    if "error" in resp.keys():
+    if "error" in resp:
         ret["result"] = False
         ret["comment"] = f"could not retrieve blobstore {name}."
         ret["error"] = resp["error"]

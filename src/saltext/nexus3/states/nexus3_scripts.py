@@ -58,7 +58,7 @@ class _ScriptClient:
         delete_url = f"{self.url}/{self.script_name}"
         resp = False
         if self.get():
-            log.debug(f"Deleting script: {self.script_name}".format(self.script_name))
+            log.debug(f"Deleting script: {self.script_name}")
             req = requests.delete(delete_url, auth=(self.username, self.password))
             if req.status_code == 204:
                 resp = req.content

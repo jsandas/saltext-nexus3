@@ -309,7 +309,7 @@ def update(  # pylint: disable=invalid-name
 
     priv_description = describe(name)
 
-    if "error" in priv_description.keys():
+    if "error" in priv_description:
         ret["comment"] = "failed to update privilege."
         ret["error"] = priv_description["error"]
         return ret
@@ -321,25 +321,25 @@ def update(  # pylint: disable=invalid-name
     if actions is not None:
         meta["actions"] = actions
 
-    if contentSelector is not None and "contentSelector" in meta.keys():
+    if contentSelector is not None and "contentSelector" in meta:
         meta["contentSelctor"] = contentSelector
 
     if description is not None:
         meta["description"] = description
 
-    if domain is not None and "domain" in meta.keys():
+    if domain is not None and "domain" in meta:
         meta["domain"] = domain
 
-    if format is not None and "format" in meta.keys():
+    if format is not None and "format" in meta:
         meta["format"] = format
 
-    if repository is not None and "repository" in meta.keys():
+    if repository is not None and "repository" in meta:
         meta["repository"] = repository
 
-    if pattern is not None and "pattern" in meta.keys():
+    if pattern is not None and "pattern" in meta:
         meta["pattern"] = pattern
 
-    if scriptName is not None and "scriptName" in meta.keys():
+    if scriptName is not None and "scriptName" in meta:
         meta["scriptName"] = scriptName
 
     nc = nexus3.NexusClient()

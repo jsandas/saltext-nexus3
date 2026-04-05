@@ -458,7 +458,7 @@ def present(
                     updates["remote_auth_type"] = remote_auth_type
                     is_update = True
 
-                if remote_auth_type == "username" or remote_auth_type == "ntlm":
+                if remote_auth_type in ["username", "ntlm"]:
                     if repo["httpClient"]["authentication"] is None:
                         updates["remote_username"] = remote_username
                     elif remote_username != repo["httpClient"]["authentication"]["username"]:
