@@ -340,6 +340,6 @@ def task(name, typeId, taskProperties, cron, setAlertEmail=None):  # pylint: dis
         "cron": cron,
     }
 
-    results = _script_processor(script_name, task_data, script_args, ret)
+    results = _script_processor(script_name, TASK_DATA, script_args, ret)
 
     return results

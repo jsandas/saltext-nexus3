@@ -205,7 +205,7 @@ def present(  # pylint: disable=invalid-name
                 is_update = True
 
         if type == "scripts":
-            if script is None:
+            if scriptName is None:
                 ret["comment"] = f"scriptName cannot be None for type {type}"
                 return ret
             if meta["privilege"]["scriptName"] != scriptName:
