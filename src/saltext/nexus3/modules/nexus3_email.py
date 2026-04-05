@@ -147,7 +147,7 @@ def describe():
         ret["email"] = json.loads(resp["body"])
     else:
         ret["comment"] = "could not to retrieve email settings"
-        ret["error"] = "code:{} msg:{}".format(resp["status"], resp["body"])
+        ret["error"] = f"code:{resp['status']} msg:{resp['body']}"
 
     return ret
 

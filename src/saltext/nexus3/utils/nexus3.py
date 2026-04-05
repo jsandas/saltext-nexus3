@@ -57,7 +57,7 @@ class NexusClient:
         config = _get_config()
         self.username = config["username"]
         self.password = config["password"]
-        self.base_url = "{}/{}".format(config["hostname"], base_api_path)
+        self.base_url = f"{config['hostname']}/{BASE_API_PATH}"
 
     def delete(self, path):
         """

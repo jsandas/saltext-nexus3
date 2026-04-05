@@ -224,7 +224,7 @@ def describe(name):
             break
 
     if ret["blobstore"]:
-        path = "{}/{}/{}".format(BLOBSTORE_PATH, ret["blobstore"]["type"].lower(), name)
+        path = f"{BLOBSTORE_PATH}/{ret['blobstore']['type'].lower()}/{name}"
 
         nc = nexus3.NexusClient()
         resp = nc.get(path)
@@ -377,7 +377,7 @@ def update(
     if quota_type is not None:
         payload["softQuota"] = {"type": quota_type, "limit": quota_limit}
 
-    path = "{}/{}/{}".format(BLOBSTORE_PATH, metadata["blobstore"]["type"].lower(), name)
+    path = f"{BLOBSTORE_PATH}/{metadata['blobstore']['type'].lower()}/{name}"
 
     nc = nexus3.NexusClient()
 
