@@ -619,10 +619,10 @@ def present(
             strict_content_validation,
         )
 
-    if "error" in resp.keys():
-        ret["result"] = False
-        ret["comment"] = resp["error"]
-        return ret
+        if "error" in resp.keys():
+            ret["result"] = False
+            ret["comment"] = resp["error"]
+            return ret
 
     ret["changes"] = resp["repository"]
 
