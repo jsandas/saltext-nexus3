@@ -147,8 +147,6 @@ def describe(name):
         for user in users:
             if user["userId"] == name:
                 ret["user"] = user
-
-        return ret
     else:
         ret["comment"] = f"could not retrieve user {name}."
         ret["error"] = {"code": resp["status"], "msg": resp["body"]}

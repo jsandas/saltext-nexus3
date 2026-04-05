@@ -129,10 +129,6 @@ def present(name, description, privileges, roles):
                 ret["result"] = None
                 ret["comment"] = f"role {name} will be updated with: {updates}"
                 return ret
-            else:
-                ret["comment"] = f"role {name} is in desired state."
-
-                return ret
 
         if not is_update:
             ret["comment"] = f"role {name} is in desired state."
