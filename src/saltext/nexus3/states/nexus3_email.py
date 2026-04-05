@@ -1,4 +1,4 @@
-'''
+"""
 state module for Nexus 3 email settings
 
 :version: v0.4.0
@@ -11,7 +11,7 @@ state module for Nexus 3 email settings
         username: 'admin'
         password: 'admin123'
 
-'''
+"""
 
 import logging
 
@@ -19,7 +19,7 @@ log = logging.getLogger(__name__)
 
 
 def clear(name):
-    '''
+    """
     name (str):
         state id name
         .. note::
@@ -31,46 +31,43 @@ def clear(name):
         clear_email:
           nexus3_email.clear
 
-    '''
+    """
 
-    ret = {
-        'name': name, 
-        'changes': {}, 
-        'result': True, 
-        'comment': ''
-    }
+    ret = {"name": name, "changes": {}, "result": True, "comment": ""}
 
-    if __opts__['test']:
-        ret['result'] = None
-        ret['comment'] = 'email configuration will be reset to defaults'
+    if __opts__["test"]:
+        ret["result"] = None
+        ret["comment"] = "email configuration will be reset to defaults"
         return ret
 
-    reset_results = __salt__['nexus3_email.reset']()
+    reset_results = __salt__["nexus3_email.reset"]()
 
-    if 'error' in reset_results.keys():
-        ret['result'] = False
-        ret['comment'] = reset_results['error']
-        return ret        
+    if "error" in reset_results.keys():
+        ret["result"] = False
+        ret["comment"] = reset_results["error"]
+        return ret
 
-    ret['changes'] = reset_results
+    ret["changes"] = reset_results
 
     return ret
 
 
-def configure(name,
-            enabled,
-            fromAddress='nexus@example.org',
-            host='localhost',
-            nexusTrustStoreEnabled=False,
-            password=None,
-            port=0,
-            sslOnConnectEnabled=False,
-            sslServerIdentityCheckEnabled=False,
-            startTlsEnabled=False,
-            startTlsRequired=False,
-            subjectPrefix=None,
-            username=''):
-    '''
+def configure(
+    name,
+    enabled,
+    fromAddress="nexus@example.org",
+    host="localhost",
+    nexusTrustStoreEnabled=False,
+    password=None,
+    port=0,
+    sslOnConnectEnabled=False,
+    sslServerIdentityCheckEnabled=False,
+    startTlsEnabled=False,
+    startTlsRequired=False,
+    subjectPrefix=None,
+    username="",
+):
+    """
     name (str):
         state id name
         .. note::
@@ -93,7 +90,7 @@ def configure(name,
 
     password (str):
         smtp password (Default: None)
-       
+
     port (int):
         smtp port (Default: 0)
 
@@ -131,47 +128,52 @@ def configure(name,
             - port: 587
             - fromAddress: test@example.com
             - startTlsEnabled: True
-    '''
+    """
 
-    ret = {
-        'name': name, 
-        'changes': {}, 
-        'result': True, 
-        'comment': ''
-    }
+    ret = {"name": name, "changes": {}, "result": True, "comment": ""}
 
-    ret['comment'] = 'email configuration is in desired state.'
+    ret["comment"] = "email configuration is in desired state."
     is_update = False
-    meta = __salt__['nexus3_email.describe']()
+    meta = __salt__["nexus3_email.describe"]()
     updates = {}
 
-    if 'error' in meta.keys():
-        ret['result'] = False
-        ret['comment'] = meta['error']
+    if "error" in meta.keys():
+        ret["result"] = False
+        ret["comment"] = meta["error"]
         return ret
 
     input_vars = locals()
-    for k, v in meta['email'].items():
+    for k, v in meta["email"].items():
         if v != input_vars[k]:
             is_update = True
             updates[k] = input_vars[k]
 
     if is_update:
-        if __opts__['test']:
-            ret['result'] = None
-            ret['comment'] = 'email configuration will be updated with: {}'.format(updates)
+        if __opts__["test"]:
+            ret["result"] = None
+            ret["comment"] = f"email configuration will be updated with: {updates}"
             return ret
 
-        configure_results = __salt__['nexus3_email.configure'](enabled,fromAddress,host,
-                        nexusTrustStoreEnabled,password,port,sslOnConnectEnabled,
-                        sslServerIdentityCheckEnabled,startTlsEnabled,startTlsRequired,
-                        subjectPrefix,username)
+        configure_results = __salt__["nexus3_email.configure"](
+            enabled,
+            fromAddress,
+            host,
+            nexusTrustStoreEnabled,
+            password,
+            port,
+            sslOnConnectEnabled,
+            sslServerIdentityCheckEnabled,
+            startTlsEnabled,
+            startTlsRequired,
+            subjectPrefix,
+            username,
+        )
 
-        if 'error' in configure_results.keys():
-            ret['result'] = False
-            ret['comment'] = configure_results['error']
-            return ret        
+        if "error" in configure_results.keys():
+            ret["result"] = False
+            ret["comment"] = configure_results["error"]
+            return ret
 
-        ret['changes'] = configure_results
+        ret["changes"] = configure_results
 
     return ret

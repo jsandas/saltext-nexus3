@@ -1,42 +1,106 @@
-The purpose of this project is to provide an easy method for managing Nexus 3 with Salt using the REST API. Sonatype has disabled execution of groovy scripts by default for security reasons (https://help.sonatype.com/repomanager3/rest-and-integration-api/script-api).
+# Salt Extension for Sonatype Nexus Repository 3
 
-Installation:
+Salt Extension for interacting with Sonatype Nexus Repository 3
 
-Extension package installation (supported path):
+## Security
 
-Install from source for development:
+If you discover a security vulnerability, please refer
+to [Salt's security guide][security].
 
-  pip install -e .
+## User Documentation
 
-  Development commands:
+For setup and usage instructions, please refer to the
+module docstrings (for now, documentation is coming!).
 
-    make test
-    make test-integration
-    make lint
-    make docs-sphinx
-    make changelog-draft
+## Contributing
 
-  Docs:
+The saltext-nexus3 project welcomes contributions from anyone!
 
-  - [Installation](docs/topics/installation.md)
-  - [API Modules Reference](docs/ref/modules.rst)
-  - [API States Reference](docs/ref/states.rst)
+The [Salt Extensions guide][salt-extensions-guide] provides comprehensive instructions on all aspects
+of Salt extension development, including [writing tests][writing-tests], [running tests][running-tests],
+[writing documentation][writing-docs] and [rendering the docs][rendering-docs].
 
-The files under `tests/files/salt/nexus3` and `tests/files/salt/pillar` can be used as examples for using these modules.
+### Quickstart
 
-The nexus3 execution modules depend on the python requests library which should already be installed from the installation of the salt minion.
+To get started contributing, first clone this repository (or your fork):
 
-Configuration:
-In order to connect to Nexus 3, credentials can be provided through the minion configuration in yaml format:
+```bash
+# Clone the repo
+git clone --origin upstream git@github.com:jsandas/saltext-nexus3.git
 
-    Example:
-      nexus3:
-        hostname: '127.0.0.1:8081'
-        username: 'admin'
-        password: 'admin123'
+# Change to the repo dir
+cd saltext-nexus3
+```
 
-If setting up Nexus for the first time, set the admin (or whichever user you choose to use) password and log then log out.
+#### Automatic
+If you have installed [direnv][direnv], copying the included `.envrc.example` to `.envrc` and
+allowing it to run ensures a proper development environment is present and the virtual environment is active.
 
-**Reference docs:**
-[Modules](docs/ref/modules.rst)
-[States](docs/ref/states.rst)
+Without `direnv`, you can still run the automation explicitly:
+
+```bash
+make dev  # or python3 tools/initialize.py
+source .venv/bin/activate
+```
+
+#### Manual
+Please follow the [first steps][first-steps], skipping the repository initialization and first commit.
+
+### Pull request
+
+Always make changes in a feature branch:
+
+```bash
+git switch -c my-feature-branch
+```
+
+Please ensure you include a [news fragment](https://salt-extensions.github.io/salt-extension-copier/topics/documenting/changelog.html#procedure)
+describing your changes. This is a requirement for all user-facing changes (bug fixes, new features),
+with the exception of documentation changes.
+
+To [submit a Pull Request][submitting-pr], you'll need a fork of this repository in
+your own GitHub account. If you followed the instructions above,
+set your fork as the `origin` remote now:
+
+```bash
+git remote add origin git@github.com:<your_fork>.git
+```
+
+Ensure you followed the [first steps][first-steps] and commit your changes, fixing any
+failing `pre-commit` hooks. Then push the feature branch to your fork and submit a PR.
+
+### Ways to contribute
+
+Contributions come in many forms, and they’re all valuable! Here are some ways you can help
+without writing code:
+
+* **Documentation**: Especially examples showing how to use this project
+  to solve specific problems.
+* **Triaging issues**: Help manage [issues][issues] and participate in [discussions][discussions].
+* **Reviewing [Pull Requests][PRs]**: We especially appreciate reviews using [Conventional Comments][comments].
+
+You can also contribute by:
+
+* Writing blog posts
+* Sharing your experiences using Salt + Sonatype Nexus Repository 3
+  on social media
+* Giving talks at conferences
+* Publishing videos
+* Engaging in IRC, Discord or email groups
+
+Any of these things are super valuable to our community, and we sincerely
+appreciate every contribution!
+
+[security]: https://github.com/saltstack/salt/blob/master/SECURITY.md
+[salt-extensions-guide]: https://salt-extensions.github.io/salt-extension-copier/
+[writing-tests]: https://salt-extensions.github.io/salt-extension-copier/topics/testing/writing.html
+[running-tests]: https://salt-extensions.github.io/salt-extension-copier/topics/testing/running.html
+[writing-docs]: https://salt-extensions.github.io/salt-extension-copier/topics/documenting/writing.html
+[rendering-docs]: https://salt-extensions.github.io/salt-extension-copier/topics/documenting/building.html
+[first-steps]: https://salt-extensions.github.io/salt-extension-copier/topics/creation.html#initialize-the-python-virtual-environment
+[submitting-pr]: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork
+[direnv]: https://direnv.net
+[issues]: https://github.com/jsandas/saltext-nexus3/issues
+[PRs]: https://github.com/jsandas/saltext-nexus3/pulls
+[discussions]: https://github.com/jsandas/saltext-nexus3/discussions
+[comments]: https://conventionalcomments.org/

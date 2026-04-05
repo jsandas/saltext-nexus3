@@ -1,4 +1,4 @@
-'''
+"""
 execution module for Nexus 3 security privileges
 
 :version: v0.4.0
@@ -11,7 +11,7 @@ execution module for Nexus 3 security privileges
         username: 'admin'
         password: 'admin123'
 
-'''
+"""
 
 import json
 import logging
@@ -21,25 +21,27 @@ from saltext.nexus3.utils import nexus3
 log = logging.getLogger(__name__)
 
 __outputter__ = {
-    'sls': 'highstate',
-    'apply_': 'highstate',
-    'highstate': 'highstate',
+    "sls": "highstate",
+    "apply_": "highstate",
+    "highstate": "highstate",
 }
 
-privileges_path = 'v1/security/privileges'
+privileges_path = "v1/security/privileges"
 
 
-def create(name,
-        type,
-        actions=[],
-        contentSelector=None,
-        description='New Nexus privilege',
-        domain=None,
-        format=None,
-        pattern=None,
-        repository=None,
-        scriptName=None):
-    '''
+def create(
+    name,
+    type,
+    actions=[],
+    contentSelector=None,
+    description="New Nexus privilege",
+    domain=None,
+    format=None,
+    pattern=None,
+    repository=None,
+    scriptName=None,
+):
+    """
     name (str):
         privilege name
 
@@ -81,79 +83,68 @@ def create(name,
     scriptName (str):
         script name (Default: None)
 
-    CLI Example::
+    CLI Example:
 
     .. code-block:: bash
 
         salt myminion nexus3_privileges.create name=nx-userschangepw actions="['ADD','READ']" description='Change password permission' domain=userschangepw type=application
 
         salt myminion nexus3_privileges.create name=nx-repository-view-nuget-nuget-hosted-browse actions=['BROWSE'] description='Browse privilege for nuget-hosted repository views' format=nuget repository=nuget-hosted type=repository-view
-    '''
+    """
 
-    ret = {
-        'privilege': {}
-    }
+    ret = {"privilege": {}}
 
-    path = privileges_path + '/' + type
+    path = privileges_path + "/" + type
 
     payload = {
-        'name': name,
-        'description': description,
-        'actions': actions,
+        "name": name,
+        "description": description,
+        "actions": actions,
     }
 
-    application = {
-        'domain': domain
-    }
+    application = {"domain": domain}
 
-    repository = {
-        'format': format,
-        'repository': repository
-    }
+    repository = {"format": format, "repository": repository}
 
     repository_content_selector = {
-        'format': format,
-        'repository': repository,
-        'contentSelector': contentSelector
+        "format": format,
+        "repository": repository,
+        "contentSelector": contentSelector,
     }
 
-    script = {
-        'scriptName': scriptName
-    }
+    script = {"scriptName": scriptName}
 
-    wildcard = {
-        'name': name,
-        'description': description,
-        'pattern': pattern
-    }
+    wildcard = {"name": name, "description": description, "pattern": pattern}
 
-    if type == 'application':
+    if type == "application":
         if domain is None:
-            ret['comment'] = 'domain cannot be None for type {}'.format(type)
+            ret["comment"] = f"domain cannot be None for type {type}"
             return ret
         payload.update(application)
 
-    if type in ['repository-admin','repository-view']:
+    if type in ["repository-admin", "repository-view"]:
         if format is None or repository is None:
-            ret['comment'] = 'format and repository cannot be None for type {}'.format(type)
+            ret["comment"] = f"format and repository cannot be None for type {type}"
             return ret
         payload.update(repository)
 
-    if type == 'repository-content-selector':
+    if type == "repository-content-selector":
         if format is None or repository is None or contentSelector is None:
-            ret['comment'] = 'format, contentSelector, and repository cannot be None for type {}'.format(type)
+            ret["comment"] = (
+                f"format, contentSelector, and repository cannot be None for type {type}"
+            )
             return ret
-        payload.update(repository_content_selector)   
+        payload.update(repository_content_selector)
 
-    if type == 'scripts':
+    if type == "scripts":
         if script is None:
-            ret['comment'] = 'scriptName cannot be None for type {}'.format(type)
+            ret["comment"] = f"scriptName cannot be None for type {type}"
             return ret
         payload.update(script)
 
-    if type == 'wildcard':
+    if type == "wildcard":
         if pattern is None:
-            ret['comment'] = 'pattern cannot be None for type {}'.format(type)
+            ret["comment"] = f"pattern cannot be None for type {type}"
             return ret
         payload = wildcard
 
@@ -161,95 +152,87 @@ def create(name,
 
     resp = nc.post(path, payload)
 
-    if resp['status'] == 201:
-        ret['comment'] = 'privilege {} created.'.format(name)
-        ret['privilege'] = describe(name)['privilege']
+    if resp["status"] == 201:
+        ret["comment"] = f"privilege {name} created."
+        ret["privilege"] = describe(name)["privilege"]
     else:
-        ret['comment'] = 'could not create privilege {}.'.format(name)
-        ret['error'] = {
-            'code': resp['status'],
-            'msg': resp['body']
-        }
+        ret["comment"] = f"could not create privilege {name}."
+        ret["error"] = {"code": resp["status"], "msg": resp["body"]}
 
     return ret
-    
+
 
 def delete(name):
-    '''
+    """
     name (str):
         privilege name
 
-    CLI Example::
+    CLI Example:
 
     .. code-block:: bash
 
         salt myminion nexus3_privileges.delete nx-analytics-all
-    '''
+    """
 
     ret = {}
 
-    path = privileges_path + '/' + name
+    path = privileges_path + "/" + name
 
     nc = nexus3.NexusClient()
 
     resp = nc.delete(path)
 
-    if resp['status'] == 204:
-        ret['comment'] = 'privilege {} delete.'.format(name)
+    if resp["status"] == 204:
+        ret["comment"] = f"privilege {name} delete."
     else:
-        ret['comment'] = 'could not delete privilege {}.'.format(name)
-        ret['error'] = {
-            'code': resp['status'],
-            'msg': resp['body']
-        }
+        ret["comment"] = f"could not delete privilege {name}."
+        ret["error"] = {"code": resp["status"], "msg": resp["body"]}
 
     return ret
 
 
 def describe(name):
-    '''
+    """
     name (str):
         privilege name
 
-    CLI Example::
+    CLI Example:
 
     .. code-block:: bash
 
         salt myminion nexus3_privileges.describe nx-analytics-all
-    '''
+    """
 
     ret = {
-        'privilege': {},
+        "privilege": {},
     }
 
-    path = privileges_path + '/' + name
+    path = privileges_path + "/" + name
     nc = nexus3.NexusClient()
 
     resp = nc.get(path)
 
-    if resp['status'] == 200:
-        ret['privilege'] = json.loads(resp['body'])
+    if resp["status"] == 200:
+        ret["privilege"] = json.loads(resp["body"])
     else:
-        ret['comment'] = 'could not retrieve privilege {}.'.format(name)
-        ret['error'] = {
-            'code': resp['status'],
-            'msg': resp['body']
-        }
+        ret["comment"] = f"could not retrieve privilege {name}."
+        ret["error"] = {"code": resp["status"], "msg": resp["body"]}
 
     return ret
 
 
 def list_all():
-    '''
-    CLI Example::
+    """
+
+    CLI Example:
 
     .. code-block:: bash
 
         salt myminion nexus3_privileges.list_all
-    '''
+    """
 
     ret = {
-        'privileges': {},
+        "privileges": {},
     }
 
     path = privileges_path
@@ -257,28 +240,27 @@ def list_all():
 
     resp = nc.get(path)
 
-    if resp['status'] == 200:
-        ret['privileges'] = json.loads(resp['body'])
+    if resp["status"] == 200:
+        ret["privileges"] = json.loads(resp["body"])
     else:
-        ret['comment'] = 'could not retrieve available privileges.'
-        ret['error'] = {
-            'code': resp['status'],
-            'msg': resp['body']
-        }
+        ret["comment"] = "could not retrieve available privileges."
+        ret["error"] = {"code": resp["status"], "msg": resp["body"]}
 
     return ret
 
 
-def update(name,
-        actions=None,
-        contentSelector=None,
-        description=None,
-        domain=None,
-        format=None,
-        pattern=None,
-        repository=None,
-        scriptName=None):
-    '''
+def update(
+    name,
+    actions=None,
+    contentSelector=None,
+    description=None,
+    domain=None,
+    format=None,
+    pattern=None,
+    repository=None,
+    scriptName=None,
+):
+    """
     name (str):
         privilege name
 
@@ -316,64 +298,59 @@ def update(name,
     scriptName (str):
         script name (Default: None)
 
-    CLI Example::
+    CLI Example:
 
     .. code-block:: bash
 
         salt myminion nexus3_privileges.update name=testing actions="['ADD','READ']" description='Change password permission' domain=userschangepw type=application
-    '''
+    """
 
-    ret = {
-        'privilege': {}
-    }
+    ret = {"privilege": {}}
 
     priv_description = describe(name)
 
-    if 'error' in priv_description.keys():
-        ret['comment'] = 'failed to update privilege.'
-        ret['error'] = priv_description['error']
+    if "error" in priv_description.keys():
+        ret["comment"] = "failed to update privilege."
+        ret["error"] = priv_description["error"]
         return ret
 
-    meta = priv_description['privilege']
+    meta = priv_description["privilege"]
 
-    path = privileges_path + '/' + meta['type'] + '/' + name
+    path = privileges_path + "/" + meta["type"] + "/" + name
 
     if actions is not None:
-        meta['actions'] = actions
+        meta["actions"] = actions
 
-    if contentSelector is not None and 'contentSelector' in meta.keys():
-        meta['contentSelctor'] = contentSelector
+    if contentSelector is not None and "contentSelector" in meta.keys():
+        meta["contentSelctor"] = contentSelector
 
     if description is not None:
-        meta['description'] = description
+        meta["description"] = description
 
-    if domain is not None and 'domain' in meta.keys():
-        meta['domain'] = domain
+    if domain is not None and "domain" in meta.keys():
+        meta["domain"] = domain
 
-    if format is not None and 'format' in meta.keys():
-        meta['format'] = format
+    if format is not None and "format" in meta.keys():
+        meta["format"] = format
 
-    if repository is not None and 'repository' in meta.keys():
-        meta['repository'] = repository
+    if repository is not None and "repository" in meta.keys():
+        meta["repository"] = repository
 
-    if pattern is not None and 'pattern' in meta.keys():
-        meta['pattern'] = pattern
-    
-    if scriptName is not None and 'scriptName' in meta.keys():
-        meta['scriptName'] = scriptName
+    if pattern is not None and "pattern" in meta.keys():
+        meta["pattern"] = pattern
+
+    if scriptName is not None and "scriptName" in meta.keys():
+        meta["scriptName"] = scriptName
 
     nc = nexus3.NexusClient()
 
     resp = nc.put(path, meta)
 
-    if resp['status'] == 204:
-        ret['comment'] = 'updated privilege {}.'.format(name)
-        ret['privilege'] = describe(name)['privilege']
+    if resp["status"] == 204:
+        ret["comment"] = f"updated privilege {name}."
+        ret["privilege"] = describe(name)["privilege"]
     else:
-        ret['comment'] = 'could not update privilege {}.'.format(name)
-        ret['error'] = {
-            'code': resp['status'],
-            'msg': resp['body']
-        }
+        ret["comment"] = f"could not update privilege {name}."
+        ret["error"] = {"code": resp["status"], "msg": resp["body"]}
 
     return ret

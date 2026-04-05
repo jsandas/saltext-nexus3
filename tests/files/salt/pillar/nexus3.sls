@@ -114,7 +114,7 @@ nexus3:
   tasks:
     database_backup:
       typeId: 'db.backup'
-      taskProperties: 
+      taskProperties:
         location: '/nexus-data/backup'
       cron: '0 0 21 * * ?'
     docker-garbage-collection:

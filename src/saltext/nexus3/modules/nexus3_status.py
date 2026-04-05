@@ -1,4 +1,4 @@
-'''
+"""
 execution module for Nexus 3 status check
 
 :version: v0.4.0
@@ -11,7 +11,7 @@ execution module for Nexus 3 status check
         username: 'admin'
         password: 'admin123'
 
-'''
+"""
 
 import json
 import logging
@@ -21,42 +21,39 @@ from saltext.nexus3.utils import nexus3
 log = logging.getLogger(__name__)
 
 __outputter__ = {
-    'sls': 'highstate',
-    'apply_': 'highstate',
-    'highstate': 'highstate',
+    "sls": "highstate",
+    "apply_": "highstate",
+    "highstate": "highstate",
 }
 
-status_path = 'v1/status'
+status_path = "v1/status"
 
 
 def check():
-    '''
+    """
     Health check endpoint that returns the results of the system status checks
 
-    CLI Example::
+    CLI Example:
 
     .. code-block:: bash
 
         salt myminion nexus3_status.check
-    '''
+    """
 
     ret = {
-        'status': {},
+        "status": {},
     }
 
-    path = status_path + '/check'
+    path = status_path + "/check"
 
     nc = nexus3.NexusClient()
 
     resp = nc.get(path)
 
-    if resp['status'] == 200:
-        ret['status'] = json.loads(resp['body'])
+    if resp["status"] == 200:
+        ret["status"] = json.loads(resp["body"])
     else:
-        ret['comment'] = 'could not get status checks'
-        ret['error'] = {
-            'code': resp['status'],
-            'msg': resp['body']
-        }
+        ret["comment"] = "could not get status checks"
+        ret["error"] = {"code": resp["status"], "msg": resp["body"]}
 
     return ret

@@ -1,4 +1,4 @@
-'''
+"""
 state module for working with the Nexus 3 Script API
 
 :version: v0.4.0
@@ -7,9 +7,9 @@ This module can be used for managing parts of Nexus that are not available in th
 
 .. note::
     Sonatype has disabled groovy script execution by default in recent versions
-    of Nexus 3.  See here for defaults. 
+    of Nexus 3.  See here for defaults.
     https://help.sonatype.com/repomanager3/rest-and-integration-api/script-api
-    
+
 Based on the work in ThoTeam's project for ansible (https://github.com/ansible-ThoTeam/nexus3-oss).
 The groovy scripts used by this state are copied from or based on the scripts
 provided in this repository in the nexus_groovy.py file so they sync with the
@@ -19,13 +19,14 @@ module itself.
 
 :configuration: In order to connect to Nexus 3, certain configuration is required
     in /etc/salt/minion on the relevant minions.
-    
+
     nexus3:
         hostname: '127.0.0.1:8081'
         username: 'admin'
         password: 'admin123'
 
-'''
+"""
+
 # from __future__ import absolute_import, print_function, unicode_literals
 
 import json
@@ -47,22 +48,22 @@ class _ScriptClient:
         self.password = password
         self.script_name = script_name
         self.script_data = script_data
-        self.url = '{}/service/rest/v1/script'.format(host)
+        self.url = f"{host}/service/rest/v1/script"
 
     def delete(self):
         """
         Deletes script to Nexus 3 script API
         Returns false if script does not exist
         """
-        delete_url = '{}/{}'.format(self.url, self.script_name)
+        delete_url = f"{self.url}/{self.script_name}"
         resp = False
         if self.get():
-            log.debug('Deleting script: {}'.format(self.script_name).format(self.script_name))
+            log.debug(f"Deleting script: {self.script_name}".format(self.script_name))
             req = requests.delete(delete_url, auth=(self.username, self.password))
             if req.status_code == 204:
                 resp = req.content
                 return resp
-            log.error('Failed deleting script: {} Reason: {}'.format(self.script_name, req.status_code))
+            log.error(f"Failed deleting script: {self.script_name} Reason: {req.status_code}")
 
         return resp
 
@@ -71,17 +72,17 @@ class _ScriptClient:
         Get script to Nexus 3 script API
         Returns false if script does not exist
         """
-        get_url = '{}/{}'.format(self.url, self.script_name)
+        get_url = f"{self.url}/{self.script_name}"
         resp = False
         try:
-            log.debug('checking for script {}'.format(self.script_name))
+            log.debug(f"checking for script {self.script_name}")
             req = requests.get(get_url, auth=(self.username, self.password))
             if req.status_code == 200:
                 resp = req.content
                 return resp
-            log.warning('script {} not found. response: {}'.format(self.script_name, req.status_code))
+            log.warning(f"script {self.script_name} not found. response: {req.status_code}")
         except Exception as e:
-            log.error('script {} not found. response: {}'.format(self.script_name, e))
+            log.error(f"script {self.script_name} not found. response: {e}")
 
         return resp
 
@@ -99,18 +100,20 @@ class _ScriptClient:
         Results returned as null from the script API
         is actually a positive in this case
         """
-        run_url = '{}/{}/run'.format(self.url, self.script_name)
-        headers = {'Content-Type': 'text/plain'}
+        run_url = f"{self.url}/{self.script_name}/run"
+        headers = {"Content-Type": "text/plain"}
         payload = json.dumps(script_args)
 
         resp = False
         if self.get():
-            log.debug('running script: {}'.format(self.script_name))
-            req = requests.post(run_url, auth=(self.username, self.password), headers=headers, data=payload)
+            log.debug(f"running script: {self.script_name}")
+            req = requests.post(
+                run_url, auth=(self.username, self.password), headers=headers, data=payload
+            )
             if req.status_code == 200:
                 resp = req.json()
                 return resp
-            log.error('could not run script {}. response: {}'.format(self.script_name, req.status_code))
+            log.error(f"could not run script {self.script_name}. response: {req.status_code}")
 
         return resp
 
@@ -121,55 +124,55 @@ class _ScriptClient:
         it will be updated/replaced
         """
 
-        data = {'name': self.script_name,
-                'content': self.script_data,
-                'type': 'groovy'}
+        data = {"name": self.script_name, "content": self.script_data, "type": "groovy"}
 
         payload = json.dumps(data)
 
-        headers = {'Content-Type': 'application/json'}
+        headers = {"Content-Type": "application/json"}
         resp = False
         if self.get():
-            log.debug('updating script: {}'.format(self.script_name))
-            upload_url = '{}/{}'.format(self.url, self.script_name)
-            req = requests.put(upload_url, auth=(self.username, self.password), headers=headers, data=payload)
+            log.debug(f"updating script: {self.script_name}")
+            upload_url = f"{self.url}/{self.script_name}"
+            req = requests.put(
+                upload_url, auth=(self.username, self.password), headers=headers, data=payload
+            )
             if req.status_code == 204:
                 resp = True
                 return resp
-            log.error('could not update script {}. response: {}'.format(self.script_name, req.status_code))
+            log.error(f"could not update script {self.script_name}. response: {req.status_code}")
         else:
-            log.debug('uploading script: {}'.format(self.script_name))
-            req = requests.post(self.url, auth=(self.username, self.password), headers=headers, data=payload)
+            log.debug(f"uploading script: {self.script_name}")
+            req = requests.post(
+                self.url, auth=(self.username, self.password), headers=headers, data=payload
+            )
             if req.status_code == 204:
                 resp = True
                 return resp
-            log.error('could not upload script "{}." response: {}'.format(self.script_name, req.status_code))
+            log.error(f'could not upload script "{self.script_name}." response: {req.status_code}')
 
         return resp
 
 
 def _connection_info():
-    '''
+    """
     Gets configuration from minion config/pillars
-    '''
-    conn_info = {'hostname': 'http://127.0.0.1:8081',
-                'username': '',
-                'password': ''}
+    """
+    conn_info = {"hostname": "http://127.0.0.1:8081", "username": "", "password": ""}
 
-    _opts = __salt__['config.option']('nexus3')
-    
+    _opts = __salt__["config.option"]("nexus3")
+
     missing_args = []
     for attr in conn_info:
         if attr not in _opts:
             if conn_info[attr]:
-                log.warning('Used default value for nexus3 {}: {}'.format(attr, conn_info[attr]))
+                log.warning(f"Used default value for nexus3 {attr}: {conn_info[attr]}")
                 continue
             missing_args.append(attr)
             continue
         conn_info[attr] = _opts[attr]
 
     if missing_args:
-        msg = 'The following connection details are missing: {}'.format(missing_args)
+        msg = f"The following connection details are missing: {missing_args}"
         log.error(msg)
 
     return conn_info
@@ -178,26 +181,29 @@ def _connection_info():
 def _script_processor(script_name, script_data, script_args, ret):
     connection_info = _connection_info()
 
-    client = _ScriptClient(connection_info['hostname'],
-                           connection_info['username'],
-                           connection_info['password'],
-                           script_name,
-                           script_data)
+    client = _ScriptClient(
+        connection_info["hostname"],
+        connection_info["username"],
+        connection_info["password"],
+        script_name,
+        script_data,
+    )
 
     upload_results = client.upload()
 
     if upload_results:
         run_results = client.run(script_args)
         if run_results:
-            ret['changes'] = {'nexus': run_results['result']}
+            ret["changes"] = {"nexus": run_results["result"]}
         else:
-            ret['result'] = False
-            ret['comment'] = 'script {} failed to run. see minion logs for details.'.format(script_name)
+            ret["result"] = False
+            ret["comment"] = f"script {script_name} failed to run. see minion logs for details."
     else:
-        ret['result'] = False
-        ret['comment'] = 'script {} failed to upload. see minion logs for details.'.format(script_name)
+        ret["result"] = False
+        ret["comment"] = f"script {script_name} failed to upload. see minion logs for details."
 
     return ret
+
 
 base_url_data = """
 import groovy.json.JsonSlurper
@@ -206,6 +212,7 @@ parsedArgs = new JsonSlurper().parseText(args)
 
 core.baseUrl(parsedArgs.baseUrl)
 """
+
 
 def base_url(name):
     """
@@ -224,15 +231,11 @@ def base_url(name):
       nexus3_scripts.base_url
     """
 
-    script_name = 'setup_base_url'
+    script_name = "setup_base_url"
 
-    ret = {'name': name,
-           'changes': {},
-           'result': True,
-           'comment': 'base url set: {}'.format(name)
-    }
+    ret = {"name": name, "changes": {}, "result": True, "comment": f"base url set: {name}"}
 
-    script_args = {'baseUrl': name}
+    script_args = {"baseUrl": name}
 
     results = _script_processor(script_name, base_url_data, script_args, ret)
     return results
@@ -275,11 +278,8 @@ Schedule schedule = taskScheduler.scheduleFactory.cron(new Date(), parsedArgs.cr
 taskScheduler.scheduleTask(taskConfiguration, schedule)
 """
 
-def task(name,
-         typeId,
-         taskProperties,
-         cron,
-         setAlertEmail=None):
+
+def task(name, typeId, taskProperties, cron, setAlertEmail=None):
     """
 
     name (str):
@@ -328,18 +328,17 @@ def task(name,
 
     """
 
-    script_name = 'create_task'
+    script_name = "create_task"
 
-    ret = {'name': name,
-           'changes': {},
-           'result': True,
-           'comment': 'task created/updated: {}'.format(name)}
+    ret = {"name": name, "changes": {}, "result": True, "comment": f"task created/updated: {name}"}
 
-    script_args = {'name': name,
-                   'typeId': typeId,
-                   'taskProperties': taskProperties,
-                   'setAlertEmail': setAlertEmail,
-                   'cron': cron}
+    script_args = {
+        "name": name,
+        "typeId": typeId,
+        "taskProperties": taskProperties,
+        "setAlertEmail": setAlertEmail,
+        "cron": cron,
+    }
 
     results = _script_processor(script_name, task_data, script_args, ret)
 

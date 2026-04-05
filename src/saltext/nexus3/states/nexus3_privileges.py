@@ -1,4 +1,4 @@
-'''
+"""
 state module for Nexus 3 privileges
 
 :version: v0.4.0
@@ -11,7 +11,7 @@ state module for Nexus 3 privileges
         username: 'admin'
         password: 'admin123'
 
-'''
+"""
 
 import logging
 
@@ -19,7 +19,7 @@ log = logging.getLogger(__name__)
 
 
 def absent(name):
-    '''
+    """
     name (str):
         name of privilege
 
@@ -27,51 +27,48 @@ def absent(name):
 
         testing1:
           nexus3_privileges.absent
-    '''
+    """
 
-    ret = {
-        'name': name, 
-        'changes': {}, 
-        'result': True, 
-        'comment': ''
-    }
+    ret = {"name": name, "changes": {}, "result": True, "comment": ""}
 
     exists = True
 
-    meta = __salt__['nexus3_privileges.describe'](name)
-    
-    if not meta['privilege']:
+    meta = __salt__["nexus3_privileges.describe"](name)
+
+    if not meta["privilege"]:
         exists = False
 
     if exists:
-        if __opts__['test']:
-            ret['result'] = None
-            ret['comment'] = 'privilege {} will be deleted.'.format(name)
+        if __opts__["test"]:
+            ret["result"] = None
+            ret["comment"] = f"privilege {name} will be deleted."
             return ret
 
-        resp = __salt__['nexus3_privileges.delete'](name)
-        if 'error' in resp.keys():
-            ret['result'] = False
-            ret['comment'] = meta['error']
+        resp = __salt__["nexus3_privileges.delete"](name)
+        if "error" in resp.keys():
+            ret["result"] = False
+            ret["comment"] = meta["error"]
         else:
-            ret['changes'] = resp
+            ret["changes"] = resp
     else:
-        ret['comment'] = 'privilege {} does not exist'.format(name)
+        ret["comment"] = f"privilege {name} does not exist"
 
     return ret
 
 
-def present(name,
-            type,
-            actions=[],
-            contentSelector=None,
-            description='New Nexus privilege',
-            domain=None,
-            format=None,
-            pattern=None,
-            repository=None,
-            scriptName=None):
-    '''
+def present(
+    name,
+    type,
+    actions=[],
+    contentSelector=None,
+    description="New Nexus privilege",
+    domain=None,
+    format=None,
+    pattern=None,
+    repository=None,
+    scriptName=None,
+):
+    """
     name (str):
         privilege name
 
@@ -123,117 +120,133 @@ def present(name,
             - format: maven2
             - repository: '*'
             - type: repository-admin
-    '''
+    """
 
-    ret = {
-        'name': name, 
-        'changes': {}, 
-        'result': True, 
-        'comment': ''
-    }
+    ret = {"name": name, "changes": {}, "result": True, "comment": ""}
 
     exists = True
     # get value of realms
-    meta = __salt__['nexus3_privileges.describe'](name)
+    meta = __salt__["nexus3_privileges.describe"](name)
 
-    if meta['privilege'] == {}:
+    if meta["privilege"] == {}:
         exists = False
 
     if not exists:
 
-        if __opts__['test']:
-            ret['result'] = None
-            ret['comment'] = 'privilege {} will be created.'.format(name)
+        if __opts__["test"]:
+            ret["result"] = None
+            ret["comment"] = f"privilege {name} will be created."
             return ret
 
-        create_results = __salt__['nexus3_privileges.create'](name, type, actions,
-                    contentSelector, description, domain, format, pattern, repository, scriptName)
+        create_results = __salt__["nexus3_privileges.create"](
+            name,
+            type,
+            actions,
+            contentSelector,
+            description,
+            domain,
+            format,
+            pattern,
+            repository,
+            scriptName,
+        )
 
-        if 'error' in create_results.keys():
-            ret['result'] = False
-            ret['comment'] = create_results['error']
-            return ret        
+        if "error" in create_results.keys():
+            ret["result"] = False
+            ret["comment"] = create_results["error"]
+            return ret
 
-        ret['changes'] = create_results
+        ret["changes"] = create_results
 
     if exists:
         is_update = False
         updates = {}
 
-        if meta['privilege']['description'] != description:
-            updates['description'] = description
+        if meta["privilege"]["description"] != description:
+            updates["description"] = description
             is_update = True
-        if meta['privilege']['actions'] != actions:
-            updates['actions'] = actions
+        if meta["privilege"]["actions"] != actions:
+            updates["actions"] = actions
             is_update = True
 
-        if type == 'application':
+        if type == "application":
             if domain is None:
-                ret['comment'] = 'domain cannot be None for type {}'.format(type)
+                ret["comment"] = f"domain cannot be None for type {type}"
                 return ret
-            if meta['privilege']['domain'] != domain:
-                updates['domain'] = domain
+            if meta["privilege"]["domain"] != domain:
+                updates["domain"] = domain
                 is_update = True
 
-        if type in ['repository-admin','repository-view']:
+        if type in ["repository-admin", "repository-view"]:
             if format is None or repository is None:
-                ret['comment'] = 'format and repository cannot be None for type {}'.format(type)
+                ret["comment"] = f"format and repository cannot be None for type {type}"
                 return ret
-            if meta['privilege']['format'] != format:
-                updates['format'] = format
+            if meta["privilege"]["format"] != format:
+                updates["format"] = format
                 is_update = True
-            if meta['privilege']['repository'] != repository:
-                updates['repository'] = repository
+            if meta["privilege"]["repository"] != repository:
+                updates["repository"] = repository
                 is_update = True
 
-        if type == 'repository-content-selector':
+        if type == "repository-content-selector":
             if format is None or repository is None or contentSelector is None:
-                ret['comment'] = 'format, contentSelector, and repository cannot be None for type {}'.format(type)
+                ret["comment"] = (
+                    f"format, contentSelector, and repository cannot be None for type {type}"
+                )
                 return ret
-            if meta['privilege']['format'] != format:
-                updates['format'] = format
+            if meta["privilege"]["format"] != format:
+                updates["format"] = format
                 is_update = True
-            if meta['privilege']['repository'] != repository:
-                updates['repository'] = repository
+            if meta["privilege"]["repository"] != repository:
+                updates["repository"] = repository
                 is_update = True
-            if meta['privilege']['contentSelector'] != contentSelector:
-                updates['contentSelector'] = contentSelector
+            if meta["privilege"]["contentSelector"] != contentSelector:
+                updates["contentSelector"] = contentSelector
                 is_update = True
 
-        if type == 'scripts':
+        if type == "scripts":
             if script is None:
-                ret['comment'] = 'scriptName cannot be None for type {}'.format(type)
+                ret["comment"] = f"scriptName cannot be None for type {type}"
                 return ret
-            if meta['privilege']['scriptName'] != scriptName:
-                updates['scriptName'] = scriptName
+            if meta["privilege"]["scriptName"] != scriptName:
+                updates["scriptName"] = scriptName
                 is_update = True
 
-        if type == 'wildcard':
+        if type == "wildcard":
             if pattern is None:
-                ret['comment'] = 'pattern cannot be None for type {}'.format(type)
+                ret["comment"] = f"pattern cannot be None for type {type}"
                 return ret
-            if meta['privilege']['pattern'] != pattern:
-                updates['pattern'] = pattern
+            if meta["privilege"]["pattern"] != pattern:
+                updates["pattern"] = pattern
                 is_update = True
 
-        if __opts__['test']:
+        if __opts__["test"]:
             if is_update:
-                ret['result'] = None
-                ret['comment'] = 'privilege {} will be updated with: {}'.format(name, updates)
+                ret["result"] = None
+                ret["comment"] = f"privilege {name} will be updated with: {updates}"
             else:
-                ret['comment'] = 'privilege {} is in desired state.'.format(name)
+                ret["comment"] = f"privilege {name} is in desired state."
             return ret
-        
+
         if is_update:
-            update_results = __salt__['nexus3_privileges.update'](name, actions,
-                        contentSelector, description, domain, format, pattern, repository, scriptName)
+            update_results = __salt__["nexus3_privileges.update"](
+                name,
+                actions,
+                contentSelector,
+                description,
+                domain,
+                format,
+                pattern,
+                repository,
+                scriptName,
+            )
 
-            if 'error' in update_results.keys():
-                ret['result'] = False
-                ret['comment'] = update_results['error']
-                return ret        
+            if "error" in update_results.keys():
+                ret["result"] = False
+                ret["comment"] = update_results["error"]
+                return ret
 
-            ret['changes'] = updates
+            ret["changes"] = updates
         else:
-            ret['comment'] = 'privilege {} is in desired state.'.format(name)
+            ret["comment"] = f"privilege {name} is in desired state."
     return ret

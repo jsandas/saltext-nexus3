@@ -15,4 +15,4 @@ task_{{ task }}:
   {% if data['setAlertEmail'] is defined %}
     - setAlertEmail: {{ data['setAlertEmail'] }}
   {%endif %}
-{% endfor %} 
+{% endfor %}

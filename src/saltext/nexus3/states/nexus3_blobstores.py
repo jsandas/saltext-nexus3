@@ -1,4 +1,4 @@
-'''
+"""
 state module for Nexus 3 blobstores
 
 :version: v0.4.0
@@ -11,7 +11,7 @@ state module for Nexus 3 blobstores
         username: 'admin'
         password: 'admin123'
 
-'''
+"""
 
 import logging
 
@@ -19,7 +19,7 @@ log = logging.getLogger(__name__)
 
 
 def absent(name):
-    '''
+    """
     name (str):
         Name of blobstore
 
@@ -32,56 +32,53 @@ def absent(name):
         delete_myblobstore:
           nexus3_blobstores.absent:
             - name: myblobstore
-    '''
+    """
 
-    ret = {
-        'name': name, 
-        'changes': {}, 
-        'result': True, 
-        'comment': ''
-    }
+    ret = {"name": name, "changes": {}, "result": True, "comment": ""}
 
     # get metadata of blobstore if it exists
-    meta = __salt__['nexus3_blobstores.describe'](name)
+    meta = __salt__["nexus3_blobstores.describe"](name)
     exists = True
 
-    if not meta['blobstore']:
+    if not meta["blobstore"]:
         exists = False
 
-    if not exists:       
-        ret['comment'] = 'blobstore {} not found'.format(name)
+    if not exists:
+        ret["comment"] = f"blobstore {name} not found"
 
     # if test is true
     if exists:
-        if __opts__['test']:
-            ret['result'] = None
-            ret['comment'] = 'blobstore {} will be deleted'.format(name)
+        if __opts__["test"]:
+            ret["result"] = None
+            ret["comment"] = f"blobstore {name} will be deleted"
             return ret
 
-        delete_results = __salt__['nexus3_blobstores.delete'](name)
-        if 'error' in delete_results.keys():
-            ret['result'] = False
-            ret['comment'] = delete_results['error']
-            return ret        
+        delete_results = __salt__["nexus3_blobstores.delete"](name)
+        if "error" in delete_results.keys():
+            ret["result"] = False
+            ret["comment"] = delete_results["error"]
+            return ret
 
-        ret['changes'] = delete_results
+        ret["changes"] = delete_results
 
     return ret
 
 
-def present(name,
-        quota_type=None,
-        quota_limit=1000000,
-        store_type='file',
-        s3_accessKeyId='',
-        s3_bucket='nexus3',
-        s3_endpoint='',
-        s3_expiration=3,
-        s3_forcePathStyle=False,
-        s3_prefix='',
-        s3_region='Default',
-        s3_secretAccessKey=''):
-    '''
+def present(
+    name,
+    quota_type=None,
+    quota_limit=1000000,
+    store_type="file",
+    s3_accessKeyId="",
+    s3_bucket="nexus3",
+    s3_endpoint="",
+    s3_expiration=3,
+    s3_forcePathStyle=False,
+    s3_prefix="",
+    s3_region="Default",
+    s3_secretAccessKey="",
+):
+    """
     name (str):
         Name of blobstore
 
@@ -140,118 +137,128 @@ def present(name,
             - s3_bucket: nexus3
             - s3_accessKeyId: AKIAIOSFODNN7EXAMPLE
             - s3_secretAccessKey: wJalrXUtnFEMIK7MDENGbPxRfiCYEXAMPLEKEY
-    '''
+    """
 
-    ret = {
-        'name': name, 
-        'changes': {}, 
-        'result': True, 
-        'comment': ''
-    }
+    ret = {"name": name, "changes": {}, "result": True, "comment": ""}
 
     # get metadata of blobstore if it exists
-    meta = __salt__['nexus3_blobstores.describe'](name)
+    meta = __salt__["nexus3_blobstores.describe"](name)
     exists = True
 
-    if not meta['blobstore']:
+    if not meta["blobstore"]:
         exists = False
 
     if not exists:
 
-        if __opts__['test']:
-            ret['result'] = None
-            ret['comment'] = 'blobstore {} will be created.'.format(name)
+        if __opts__["test"]:
+            ret["result"] = None
+            ret["comment"] = f"blobstore {name} will be created."
             return ret
 
-
-        create_results = __salt__['nexus3_blobstores.create'](name, quota_type, 
-                                                                quota_limit, store_type,
-                                                                s3_accessKeyId,s3_bucket,
-                                                                s3_endpoint,s3_expiration,
-                                                                s3_forcePathStyle,s3_prefix,
-                                                                s3_region,s3_secretAccessKey)
-        if 'error' in create_results.keys():
-            ret['result'] = False
-            ret['comment'] = create_results['error']
+        create_results = __salt__["nexus3_blobstores.create"](
+            name,
+            quota_type,
+            quota_limit,
+            store_type,
+            s3_accessKeyId,
+            s3_bucket,
+            s3_endpoint,
+            s3_expiration,
+            s3_forcePathStyle,
+            s3_prefix,
+            s3_region,
+            s3_secretAccessKey,
+        )
+        if "error" in create_results.keys():
+            ret["result"] = False
+            ret["comment"] = create_results["error"]
             return ret
 
-        ret['changes'] = create_results  
-  
+        ret["changes"] = create_results
+
     if exists:
         is_update = False
         updates = {}
 
-        ret['comment'] = 'blobstore {} is in desired state'.format(name)
+        ret["comment"] = f"blobstore {name} is in desired state"
 
-        if quota_type is None and meta['blobstore']['softQuota'] is not None:
-            updates['quota_type'] = quota_type
+        if quota_type is None and meta["blobstore"]["softQuota"] is not None:
+            updates["quota_type"] = quota_type
             is_update = True
 
-        if quota_type is not None and meta['blobstore']['softQuota'] is not None:
-            if quota_type != meta['blobstore']['softQuota']['type']:
-                updates['quota_type'] = quota_type
+        if quota_type is not None and meta["blobstore"]["softQuota"] is not None:
+            if quota_type != meta["blobstore"]["softQuota"]["type"]:
+                updates["quota_type"] = quota_type
                 is_update = True
-            if quota_limit != meta['blobstore']['softQuota']['limit']:
-                updates['quota_limit'] = quota_limit
+            if quota_limit != meta["blobstore"]["softQuota"]["limit"]:
+                updates["quota_limit"] = quota_limit
                 is_update = True
 
-        if quota_type is not None and meta['blobstore']['softQuota'] is None:
-            updates['quota_type'] = quota_type
-            updates['quota_limit'] = quota_limit
+        if quota_type is not None and meta["blobstore"]["softQuota"] is None:
+            updates["quota_type"] = quota_type
+            updates["quota_limit"] = quota_limit
             is_update = True
 
-        if 'bucketConfiguration' in meta['blobstore']:
-            s3_config = meta['blobstore']['bucketConfiguration']
+        if "bucketConfiguration" in meta["blobstore"]:
+            s3_config = meta["blobstore"]["bucketConfiguration"]
 
-            if s3_config['bucket']['region'] != s3_region:
-                updates['s3_region'] = s3_region
-                is_update = True
-            
-            if s3_config['bucket']['name'] != s3_bucket:
-                updates['s3_bucket'] = s3_bucket
+            if s3_config["bucket"]["region"] != s3_region:
+                updates["s3_region"] = s3_region
                 is_update = True
 
-            if s3_config['bucket']['prefix'] != s3_prefix:
-                updates['s3_prefix'] = s3_prefix
+            if s3_config["bucket"]["name"] != s3_bucket:
+                updates["s3_bucket"] = s3_bucket
                 is_update = True
 
-            current_s3_expiration = s3_config['bucket'].get('expiration', 3)
+            if s3_config["bucket"]["prefix"] != s3_prefix:
+                updates["s3_prefix"] = s3_prefix
+                is_update = True
+
+            current_s3_expiration = s3_config["bucket"].get("expiration", 3)
             if current_s3_expiration != s3_expiration:
-                updates['s3_expiration'] = s3_expiration
+                updates["s3_expiration"] = s3_expiration
                 is_update = True
 
-            if s3_config['bucketSecurity']['accessKeyId'] != s3_accessKeyId:
-                updates['s3_accessKeyId'] = s3_accessKeyId
+            if s3_config["bucketSecurity"]["accessKeyId"] != s3_accessKeyId:
+                updates["s3_accessKeyId"] = s3_accessKeyId
                 is_update = True
 
-            if s3_config['advancedBucketConnection']['endpoint'] != s3_endpoint:
-                updates['s3_endpoint'] = s3_endpoint
+            if s3_config["advancedBucketConnection"]["endpoint"] != s3_endpoint:
+                updates["s3_endpoint"] = s3_endpoint
                 is_update = True
 
-            if s3_config['advancedBucketConnection']['forcePathStyle'] != s3_forcePathStyle:
-                updates['s3_forcePathStyle'] = s3_forcePathStyle
+            if s3_config["advancedBucketConnection"]["forcePathStyle"] != s3_forcePathStyle:
+                updates["s3_forcePathStyle"] = s3_forcePathStyle
                 is_update = True
 
-        if __opts__['test']:
+        if __opts__["test"]:
             if is_update:
-                ret['result'] = None
-                ret['comment'] = 'blobstore {} will be updated with: {}'.format(name, updates)
+                ret["result"] = None
+                ret["comment"] = f"blobstore {name} will be updated with: {updates}"
             else:
-                ret['comment'] = 'blobstore {} is in desired state.'.format(name)
+                ret["comment"] = f"blobstore {name} is in desired state."
             return ret
 
         if is_update:
-            update_results = __salt__['nexus3_blobstores.update'](name, quota_type,quota_limit,
-                                                                s3_accessKeyId,s3_bucket,
-                                                                s3_endpoint,s3_expiration,
-                                                                s3_forcePathStyle,s3_prefix,
-                                                                s3_region,s3_secretAccessKey)
-            if 'error' in update_results.keys():
-                ret['result'] = False
-                ret['comment'] = update_results['error']
+            update_results = __salt__["nexus3_blobstores.update"](
+                name,
+                quota_type,
+                quota_limit,
+                s3_accessKeyId,
+                s3_bucket,
+                s3_endpoint,
+                s3_expiration,
+                s3_forcePathStyle,
+                s3_prefix,
+                s3_region,
+                s3_secretAccessKey,
+            )
+            if "error" in update_results.keys():
+                ret["result"] = False
+                ret["comment"] = update_results["error"]
                 return ret
 
-            ret['changes'] = updates
-            ret['comment'] = ''
+            ret["changes"] = updates
+            ret["comment"] = ""
 
     return ret
