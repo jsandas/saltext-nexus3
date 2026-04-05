@@ -280,7 +280,7 @@ def present(
         exists = False
 
     if exists:
-        if type != repo["type"] or format != repo["format"]:
+        if repository_type != repo["type"] or repository_format != repo["format"]:
             ret["result"] = False
             ret["comment"] = "repository type and format cannot be modified"
             return ret
@@ -353,7 +353,7 @@ def present(
                 updates["write_policy"] = write_policy.upper()
                 is_update = True
 
-            if format == "apt":
+            if repository_format == "apt":
                 if apt_dist_name != repo["apt"]["distribution"]:
                     updates["apt_dist_name"] = apt_dist_name
                     is_update = True
@@ -365,7 +365,7 @@ def present(
                 #     updates['apt_gpg_priv_key'] = apt_gpg_priv_key
                 #     is_update = True
 
-            if format == "docker":
+            if repository_format == "docker":
                 if docker_force_auth != repo["docker"]["forceBasicAuth"]:
                     updates["docker_force_auth"] = docker_force_auth
                     is_update = True
@@ -379,7 +379,7 @@ def present(
                     updates["docker_https_port"] = docker_https_port
                     is_update = True
 
-            if format == "maven2":
+            if repository_format == "maven2":
                 if maven_layout_policy.upper() != repo["maven"]["layoutPolicy"]:
                     updates["maven_layout_policy"] = maven_layout_policy.upper()
                     is_update = True
@@ -387,7 +387,7 @@ def present(
                     updates["maven_version_policy"] = maven_version_policy.upper()
                     is_update = True
 
-            if format == "yum":
+            if repository_format == "yum":
                 if yum_deploy_policy != repo["yum"]["deployPolicy"]:
                     updates["yum_deploy_policy"] = yum_deploy_policy
                     is_update = True

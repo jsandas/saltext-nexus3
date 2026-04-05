@@ -615,13 +615,13 @@ def proxy(
     if cleanup_policies:
         payload.update(cleanup)
 
-    if format == "apt":
+    if repository_format == "apt":
         payload.update(apt)
 
-    if format == "bower":
+    if repository_format == "bower":
         payload.update(bower)
 
-    if format == "docker":
+    if repository_format == "docker":
         if docker_http_port is not None:
             docker["docker"]["httpPort"] = docker_http_port
         if docker_https_port is not None:
@@ -633,10 +633,10 @@ def proxy(
 
         payload.update(docker)
 
-    if format == "maven2":
+    if repository_format == "maven2":
         payload.update(maven)
 
-    if format == "nuget":
+    if repository_format == "nuget":
         payload.update(nuget)
 
     metadata = describe(name)
