@@ -87,7 +87,7 @@ class _ScriptClient:
                 resp = req.content
                 return resp
             log.warning(f"script {self.script_name} not found. response: {req.status_code}")
-        except Exception as e:
+        except requests.RequestException as e:
             log.error(f"script {self.script_name} not found. response: {e}")
 
         return resp

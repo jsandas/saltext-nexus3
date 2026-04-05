@@ -14,7 +14,7 @@ try:
     import salt.config
 
     __opts__ = salt.config.minion_config("/etc/salt/minion")
-except Exception:
+except (ImportError, OSError):
     __opts__ = {}
 
 log = logging.getLogger(__name__)
@@ -75,7 +75,7 @@ class NexusClient:
             log.debug(f"NexusClient Request: {delete_path} {resp.status_code}")
             ret["status"] = resp.status_code
             ret["body"] = resp.content
-        except Exception as e:
+        except requests.RequestException as e:
             log.error(f"NexusClient Request failed: {e}")
             ret["body"] = e
 
@@ -96,7 +96,7 @@ class NexusClient:
             log.debug(f"NexusClient Request: {get_path} {resp.status_code}")
             ret["status"] = resp.status_code
             ret["body"] = resp.content
-        except Exception as e:
+        except requests.RequestException as e:
             log.error(f"NexusClient Request failed: {e}")
             ret["body"] = e
 
@@ -128,7 +128,7 @@ class NexusClient:
             log.debug(f"NexusClient Request: {post_path} {resp.status_code}")
             ret["status"] = resp.status_code
             ret["body"] = resp.content
-        except Exception as e:
+        except requests.RequestException as e:
             log.error(f"NexusClient Request failed: {e}")
             ret["body"] = e
 
@@ -160,7 +160,7 @@ class NexusClient:
             log.debug(f"NexusClient Request: {put_path} {resp.status_code}")
             ret["status"] = resp.status_code
             ret["body"] = resp.content
-        except Exception as e:
+        except requests.RequestException as e:
             log.error(f"NexusClient Request failed: {e}")
             ret["body"] = e
 
