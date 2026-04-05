@@ -62,8 +62,8 @@ def absent(name):
 
 def present(
     name,
-    format,
-    type,
+    repository_format,
+    repository_type,
     apt_dist_name="bionic",
     apt_flat_repo=False,
     apt_gpg_passphrase="",
@@ -109,12 +109,12 @@ def present(
         name (str):
             name of respository
 
-    format (str):
+    repository_format (str):
         Format of repository [apt|bower|cocoapads|conan|docker|maven2|etc.]
         .. note::
             This can be any officaly supported repository format for Nexus
 
-    type (str):
+    repository_type (str):
         Repository type [hosted|group|proxy]
 
     apt_dist_name (str):
@@ -137,7 +137,7 @@ def present(
     blobstore (str):
         Name of blobstore to use (Default: default)
 
-    blocked (boo):
+    blocked (bool):
         Block repository (Default: False)
 
     bower_rewrite_urls (bool):
@@ -291,13 +291,13 @@ def present(
             updates["strict_content_validation"] = strict_content_validation
             is_update = True
 
-    if type == "group":
+    if repository_type == "group":
         if exists:
             if group_members != repo["group"]["memberNames"]:
                 updates["group_members"] = group_members
                 is_update = True
 
-            if format == "docker":
+            if repository_format == "docker":
                 if docker_force_auth != repo["docker"]["forceBasicAuth"]:
                     updates["docker_force_auth"] = docker_force_auth
                     is_update = True
@@ -332,7 +332,7 @@ def present(
 
         resp = __salt__["nexus3_repositories.group"](
             name,
-            format,
+            repository_format,
             blobstore,
             docker_force_auth,
             docker_http_port,
@@ -342,7 +342,7 @@ def present(
             strict_content_validation,
         )
 
-    if type == "hosted":
+    if repository_type == "hosted":
         if exists:
             if (
                 repo["cleanup"] is not None and cleanup_policies != repo["cleanup"]["policyNames"]
@@ -416,7 +416,7 @@ def present(
 
         resp = __salt__["nexus3_repositories.hosted"](
             name,
-            format,
+            repository_format,
             apt_dist_name,
             apt_gpg_passphrase,
             apt_gpg_priv_key,
@@ -434,7 +434,7 @@ def present(
             write_policy,
         )
 
-    if type == "proxy":
+    if repository_type == "proxy":
         if exists:
             if remote_url != repo["proxy"]["remoteUrl"]:
                 updates["remote_url"] = remote_url
@@ -506,7 +506,7 @@ def present(
                 updates["userAgentSuffix"] = http_user_agent
                 is_update = True
 
-            if format == "apt":
+            if repository_type == "apt":
                 if apt_dist_name != repo["apt"]["distribution"]:
                     updates["apt_dist_name"] = apt_dist_name
                     is_update = True
@@ -514,12 +514,12 @@ def present(
                     updates["apt_flat_repo"] = apt_flat_repo
                     is_update = True
 
-            if format == "bower":
+            if repository_type == "bower":
                 if bower_rewrite_urls != repo["bower"]["rewritePackageUrls"]:
                     updates["bower_rewrite_urls"] = bower_rewrite_urls
                     is_update = True
 
-            if format == "docker":
+            if repository_type == "docker":
                 docker_settings = repo.get("docker", {})
                 current_docker_path_enabled = docker_settings.get("pathEnabled", False)
                 if current_docker_path_enabled is None:
@@ -552,7 +552,7 @@ def present(
                     updates["docker_subdomain"] = desired_docker_subdomain
                     is_update = True
 
-            if format == "maven2":
+            if repository_type == "maven2":
                 if maven_layout_policy.upper() != repo["maven"]["layoutPolicy"]:
                     updates["maven_layout_policy"] = maven_layout_policy.upper()
                     is_update = True
@@ -560,7 +560,7 @@ def present(
                     updates["maven_version_policy"] = maven_version_policy.upper()
                     is_update = True
 
-            if format == "nuget":
+            if repository_type == "nuget":
                 if nuget_cache_max_age != repo["nugetProxy"]["queryCacheItemMaxAge"]:
                     updates["nuget_cache_max_age"] = nuget_cache_max_age
                     is_update = True
@@ -574,7 +574,7 @@ def present(
                     ret["comment"] = f"repository {name} is in desired state"
             else:
                 ret["result"] = None
-                ret["comment"] = f"repository {name} will be created. Type: {type} Format: {format}"
+                ret["comment"] = f"repository {name} will be created. Type: {repository_type} Format: {repository_format}"
             return ret
 
         if exists and not is_update:
@@ -583,7 +583,7 @@ def present(
 
         resp = __salt__["nexus3_repositories.proxy"](
             name,
-            format,
+            repository_format,
             remote_url,
             apt_dist_name,
             apt_flat_repo,

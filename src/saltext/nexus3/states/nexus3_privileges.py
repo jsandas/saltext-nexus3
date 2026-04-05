@@ -58,12 +58,12 @@ def absent(name):
 
 def present(  # pylint: disable=invalid-name
     name,
-    type,
+    privilege_type,
     actions=[],
     contentSelector=None,
     description="New Nexus privilege",
     domain=None,
-    format=None,
+    repository_format=None,
     pattern=None,
     repository=None,
     scriptName=None,
@@ -72,7 +72,7 @@ def present(  # pylint: disable=invalid-name
     name (str):
         privilege name
 
-    type (str):
+    privilege_type (str):
         privilege type [application|repository-admin|respository-content-selector|repository-view|script|wildcard]
 
     actions (list):
@@ -92,7 +92,7 @@ def present(  # pylint: disable=invalid-name
         .. note::
             required for application privilege type
 
-    format (str):
+    repository_format (str):
         respository format [bower|cocoapads|conan|docker|etc.] (Default: None)
         .. note::
             required for repository-admin, respository-content-selector, and repository-view privilege types
@@ -117,9 +117,9 @@ def present(  # pylint: disable=invalid-name
             - name: testing2
             - actions: ['ALL']
             - description: 'Test repo admin'
-            - format: maven2
+            - repository_format: maven2
             - repository: '*'
-            - type: repository-admin
+            - privilege_type: repository-admin
     """
 
     ret = {"name": name, "changes": {}, "result": True, "comment": ""}
@@ -140,12 +140,12 @@ def present(  # pylint: disable=invalid-name
 
         create_results = __salt__["nexus3_privileges.create"](
             name,
-            type,
+            privilege_type,
             actions,
             contentSelector,
             description,
             domain,
-            format,
+            repository_format,
             pattern,
             repository,
             scriptName,
@@ -169,33 +169,33 @@ def present(  # pylint: disable=invalid-name
             updates["actions"] = actions
             is_update = True
 
-        if type == "application":
+        if privilege_type == "application":
             if domain is None:
-                ret["comment"] = f"domain cannot be None for type {type}"
+                ret["comment"] = f"domain cannot be None for type {privilege_type}"
                 return ret
             if meta["privilege"]["domain"] != domain:
                 updates["domain"] = domain
                 is_update = True
 
-        if type in ["repository-admin", "repository-view"]:
-            if format is None or repository is None:
-                ret["comment"] = f"format and repository cannot be None for type {type}"
+        if privilege_type in ["repository-admin", "repository-view"]:
+            if repository_format is None or repository is None:
+                ret["comment"] = f"repository_format and repository cannot be None for type {privilege_type}"
                 return ret
-            if meta["privilege"]["format"] != format:
-                updates["format"] = format
+            if meta["privilege"]["format"] != repository_format:
+                updates["format"] = repository_format
                 is_update = True
             if meta["privilege"]["repository"] != repository:
                 updates["repository"] = repository
                 is_update = True
 
-        if type == "repository-content-selector":
-            if format is None or repository is None or contentSelector is None:
+        if privilege_type == "repository-content-selector":
+            if repository_format is None or repository is None or contentSelector is None:
                 ret["comment"] = (
-                    f"format, contentSelector, and repository cannot be None for type {type}"
+                    f"repository_format, contentSelector, and repository cannot be None for type {privilege_type}"
                 )
                 return ret
-            if meta["privilege"]["format"] != format:
-                updates["format"] = format
+            if meta["privilege"]["format"] != repository_format:
+                updates["format"] = repository_format
                 is_update = True
             if meta["privilege"]["repository"] != repository:
                 updates["repository"] = repository
@@ -204,17 +204,17 @@ def present(  # pylint: disable=invalid-name
                 updates["contentSelector"] = contentSelector
                 is_update = True
 
-        if type == "scripts":
+        if privilege_type == "scripts":
             if scriptName is None:
-                ret["comment"] = f"scriptName cannot be None for type {type}"
+                ret["comment"] = f"scriptName cannot be None for type {privilege_type}"
                 return ret
             if meta["privilege"]["scriptName"] != scriptName:
                 updates["scriptName"] = scriptName
                 is_update = True
 
-        if type == "wildcard":
+        if privilege_type == "wildcard":
             if pattern is None:
-                ret["comment"] = f"pattern cannot be None for type {type}"
+                ret["comment"] = f"pattern cannot be None for type {privilege_type}"
                 return ret
             if meta["privilege"]["pattern"] != pattern:
                 updates["pattern"] = pattern
@@ -235,7 +235,7 @@ def present(  # pylint: disable=invalid-name
                 contentSelector,
                 description,
                 domain,
-                format,
+                repository_format,
                 pattern,
                 repository,
                 scriptName,

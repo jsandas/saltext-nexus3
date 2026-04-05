@@ -31,12 +31,12 @@ PRIVILEGES_PATH = "v1/security/privileges"
 
 def create(  # pylint: disable=invalid-name
     name,
-    type,
+    privilege_type,
     actions=[],
     contentSelector=None,
     description="New Nexus privilege",
     domain=None,
-    format=None,
+    repository_format=None,
     pattern=None,
     repository=None,
     scriptName=None,
@@ -45,7 +45,7 @@ def create(  # pylint: disable=invalid-name
     name (str):
         privilege name
 
-    type (str):
+    privilege_type (str):
         privilege type [application|repository-admin|respository-content-selector|repository-view|script|wildcard]
 
     actions (list):
@@ -65,7 +65,7 @@ def create(  # pylint: disable=invalid-name
         .. note::
             required for application privilege type
 
-    format (str):
+    repository_format (str):
         respository format [bower|cocoapads|conan|docker|etc.] (Default: None)
         .. note::
             required for repository-admin, respository-content-selector, and repository-view privilege types
@@ -89,12 +89,12 @@ def create(  # pylint: disable=invalid-name
 
         salt myminion nexus3_privileges.create name=nx-userschangepw actions="['ADD','READ']" description='Change password permission' domain=userschangepw type=application
 
-        salt myminion nexus3_privileges.create name=nx-repository-view-nuget-nuget-hosted-browse actions=['BROWSE'] description='Browse privilege for nuget-hosted repository views' format=nuget repository=nuget-hosted type=repository-view
+        salt myminion nexus3_privileges.create name=nx-repository-view-nuget-nuget-hosted-browse actions=['BROWSE'] description='Browse privilege for nuget-hosted repository views' repository_format=nuget repository=nuget-hosted type=repository-view
     """
 
     ret = {"privilege": {}}
 
-    path = PRIVILEGES_PATH + "/" + type
+    path = PRIVILEGES_PATH + "/" + privilege_type
 
     payload = {
         "name": name,
@@ -104,10 +104,10 @@ def create(  # pylint: disable=invalid-name
 
     application = {"domain": domain}
 
-    repository = {"format": format, "repository": repository}
+    repository = {"format": repository_format, "repository": repository}
 
     repository_content_selector = {
-        "format": format,
+        "format": repository_format,
         "repository": repository,
         "contentSelector": contentSelector,
     }
@@ -116,35 +116,35 @@ def create(  # pylint: disable=invalid-name
 
     wildcard = {"name": name, "description": description, "pattern": pattern}
 
-    if type == "application":
+    if privilege_type == "application":
         if domain is None:
-            ret["comment"] = f"domain cannot be None for type {type}"
+            ret["comment"] = f"domain cannot be None for type {privilege_type}"
             return ret
         payload.update(application)
 
-    if type in ["repository-admin", "repository-view"]:
-        if format is None or repository is None:
-            ret["comment"] = f"format and repository cannot be None for type {type}"
+    if privilege_type in ["repository-admin", "repository-view"]:
+        if repository_format is None or repository is None:
+            ret["comment"] = f"repository_format and repository cannot be None for type {privilege_type}"
             return ret
         payload.update(repository)
 
-    if type == "repository-content-selector":
-        if format is None or repository is None or contentSelector is None:
+    if privilege_type == "repository-content-selector":
+        if repository_format is None or repository is None or contentSelector is None:
             ret["comment"] = (
-                f"format, contentSelector, and repository cannot be None for type {type}"
+                f"repository_format, contentSelector, and repository cannot be None for type {privilege_type}"
             )
             return ret
         payload.update(repository_content_selector)
 
-    if type == "scripts":
-        if script is None:
-            ret["comment"] = f"scriptName cannot be None for type {type}"
+    if privilege_type == "scripts":
+        if scriptName is None:
+            ret["comment"] = f"scriptName cannot be None for type {privilege_type}"
             return ret
         payload.update(script)
 
-    if type == "wildcard":
+    if privilege_type == "wildcard":
         if pattern is None:
-            ret["comment"] = f"pattern cannot be None for type {type}"
+            ret["comment"] = f"pattern cannot be None for type {privilege_type}"
             return ret
         payload = wildcard
 
@@ -255,7 +255,7 @@ def update(  # pylint: disable=invalid-name
     contentSelector=None,
     description=None,
     domain=None,
-    format=None,
+    repository_format=None,
     pattern=None,
     repository=None,
     scriptName=None,
@@ -280,7 +280,7 @@ def update(  # pylint: disable=invalid-name
         .. note::
             required for application privilege type
 
-    format (str):
+    repository_format (str):
         respository format [bower|cocoapads|conan|docker|etc.] (Default: None)
         .. note::
             required for repository-admin, respository-content-selector, and repository-view privilege types
@@ -330,8 +330,8 @@ def update(  # pylint: disable=invalid-name
     if domain is not None and "domain" in meta:
         meta["domain"] = domain
 
-    if format is not None and "format" in meta:
-        meta["format"] = format
+    if repository_format is not None and "format" in meta:
+        meta["format"] = repository_format
 
     if repository is not None and "repository" in meta:
         meta["repository"] = repository

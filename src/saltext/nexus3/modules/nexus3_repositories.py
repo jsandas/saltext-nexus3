@@ -30,19 +30,19 @@ __outputter__ = {
 REPO_BASE_PATH = "v1/repositories"
 
 
-def _format_url_string(format):
+def _format_url_string(repository_format):
     """
     Helper function to handle inconsistency in format name and api url paths
     """
-    ret = format
-    if format == "maven2":
+    ret = repository_format
+    if repository_format == "maven2":
         ret = "maven"
     return ret
 
 
 def group(
     name,
-    format,
+    repository_format,
     blobstore="default",
     docker_force_auth=True,
     docker_http_port=None,
@@ -57,7 +57,7 @@ def group(
     name (str):
         Name of repository
 
-    format (str):
+    repository_format (str):
         Format of repository [bower|cocoapads|conan|docker|etc.]
         .. note::
             This can be any officaly supported repository format for Nexus
@@ -100,7 +100,7 @@ def group(
         "repository": {},
     }
 
-    format_url_string = _format_url_string(format)
+    format_url_string = _format_url_string(repository_format)
 
     payload = {
         "name": name,
@@ -119,7 +119,7 @@ def group(
         }
     }
 
-    if format == "docker":
+    if repository_format == "docker":
         if docker_http_port is not None:
             docker["docker"]["httpPort"] = docker_http_port
         if docker_https_port is not None:
@@ -167,7 +167,7 @@ def group(
 
 def hosted(
     name,
-    format,
+    repository_format,
     apt_dist_name="bionic",
     apt_gpg_passphrase="",
     apt_gpg_priv_key="",
@@ -190,7 +190,7 @@ def hosted(
     name (str):
         Name of repository
 
-    format (str):
+    repository_format (str):
         Format of repository [apt|bower|cocoapads|conan|docker|maven2|etc.]
         .. note::
             This can be any officaly supported repository format for Nexus
@@ -260,7 +260,7 @@ def hosted(
         "repository": {},
     }
 
-    format_url_string = _format_url_string(format)
+    format_url_string = _format_url_string(repository_format)
 
     payload = {
         "name": name,
@@ -304,20 +304,20 @@ def hosted(
     if cleanup_policies:
         payload.update(cleanup)
 
-    if format == "apt":
+    if repository_format == "apt":
         payload.update(apt)
 
-    if format == "docker":
+    if repository_format == "docker":
         if docker_http_port is not None:
             docker["docker"]["httpPort"] = docker_http_port
         if docker_https_port is not None:
             docker["docker"]["httpsPort"] = docker_https_port
         payload.update(docker)
 
-    if format == "maven2":
+    if repository_format == "maven2":
         payload.update(maven)
 
-    if format == "yum":
+    if repository_format == "yum":
         payload.update(yum)
 
     metadata = describe(name)
@@ -352,7 +352,7 @@ def hosted(
 
 def proxy(
     name,
-    format,
+    repository_format,
     remote_url,
     apt_dist_name="bionic",
     apt_flat_repo=False,
@@ -393,7 +393,7 @@ def proxy(
     name (str):
         Name of repository
 
-    format (str):
+    repository_format (str):
         Format of repository [apt|bower|cocoapads|conan|docker|maven2|etc.]
         .. note::
             This can be any officaly supported repository format for Nexus
@@ -527,7 +527,7 @@ def proxy(
         "repository": {},
     }
 
-    format_url_string = _format_url_string(format)
+    format_url_string = _format_url_string(repository_format)
 
     payload = {
         "name": name,

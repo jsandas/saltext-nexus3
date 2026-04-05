@@ -73,7 +73,7 @@ def anonymous_access(name, enabled):
     return ret
 
 
-def realms(name, realms):
+def realms(name, auth_realms):
     """
     name (str):
         state id name
@@ -81,7 +81,7 @@ def realms(name, realms):
             do not provide this argument, this is only here
             because salt passes this arg always
 
-    realms (list):
+    auth_realms (list):
         list of realms in order they should be used
         .. note::
             Include all desired realms in list as this will override
@@ -91,11 +91,11 @@ def realms(name, realms):
 
         update_realms:
           nexus3_security.realms:
-            - realms: ['NexusAuthenticatingRealm','NexusAuthorizingRealm','NpmToken','DockerToken']
+            - auth_realms: ['NexusAuthenticatingRealm','NexusAuthorizingRealm','NpmToken','DockerToken']
 
         update_realms:
           nexus3_security.realms:
-            - realms:
+            - auth_realms:
               - NexusAuthenticatingRealm
               - NexusAuthorizingRealm
               - NpmToken
@@ -113,19 +113,19 @@ def realms(name, realms):
         ret["comment"] = meta["error"]
         return ret
 
-    if meta["realms"] != realms:
+    if meta["realms"] != auth_realms:
         is_update = True
 
     if __opts__["test"]:
         if is_update:
             ret["result"] = None
-            ret["comment"] = f"realms will be set to {realms}."
+            ret["comment"] = f"realms will be set to {auth_realms}."
         else:
             ret["comment"] = "realms are in desired state"
         return ret
 
     if is_update:
-        update_results = __salt__["nexus3_realms.update"](realms=realms)
+        update_results = __salt__["nexus3_realms.update"](auth_realms=auth_realms)
 
         if "error" in update_results.keys():
             ret["result"] = False

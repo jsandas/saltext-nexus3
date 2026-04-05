@@ -120,9 +120,9 @@ def reset():
     return ret
 
 
-def update(realms=[]):
+def update(auth_realms=[]):
     """
-    realms (list):
+    auth_realms (list):
         list of realms in order they should be used
         .. note::
             Include all desired realms in list as this will override
@@ -132,7 +132,7 @@ def update(realms=[]):
 
     .. code-block:: bash
 
-        salt myminion nexus3_realms.update realms="['NexusAuthenticatingRealm','NexusAuthorizingRealm','NpmToken','DockerToken']"
+        salt myminion nexus3_realms.update auth_realms="['NexusAuthenticatingRealm','NexusAuthorizingRealm','NpmToken','DockerToken']"
     """
 
     ret = {
@@ -143,7 +143,7 @@ def update(realms=[]):
 
     nc = nexus3.NexusClient()
 
-    resp = nc.put(path, realms)
+    resp = nc.put(path, auth_realms)
 
     if resp["status"] == 204:
         ret["realms"] = list_active()["realms"]
