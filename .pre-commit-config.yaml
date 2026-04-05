@@ -125,6 +125,7 @@ repos:
         additional_dependencies:
           - nox==2026.2.9
           - uv==0.10.11  # Makes this hook much faster
+          - requests
 
       - id: nox
         alias: lint-tests
