@@ -356,7 +356,7 @@ def hosted(
     return ret
 
 
-def proxy(
+def proxy(  # pylint: disable=too-many-locals
     name,
     repository_format,
     remote_url,

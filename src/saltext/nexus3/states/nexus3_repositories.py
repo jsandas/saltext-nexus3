@@ -60,7 +60,7 @@ def absent(name):
     return ret
 
 
-def present(
+def present(  # pylint: disable=too-many-arguments,too-many-locals,too-many-branches,too-many-statements
     name,
     repository_format,
     repository_type,
@@ -579,7 +579,9 @@ def present(
                     ret["comment"] = f"repository {name} is in desired state"
             else:
                 ret["result"] = None
-                ret["comment"] = f"repository {name} will be created. Type: {repository_type} Format: {repository_format}"
+                ret["comment"] = (
+                    f"repository {name} will be created. Type: {repository_type} Format: {repository_format}"
+                )
             return ret
 
         if exists and not is_update:
