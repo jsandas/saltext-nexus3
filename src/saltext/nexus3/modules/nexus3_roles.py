@@ -29,7 +29,7 @@ __outputter__ = {
 ROLES_PATH = "v1/security/roles"
 
 
-def create(name, description="", privileges=[], roles=[]):
+def create(name, description="", privileges=None, roles=None):
     """
     name (str):
         name of role
@@ -38,10 +38,10 @@ def create(name, description="", privileges=[], roles=[]):
         description of role
 
     privileges (list):
-        list of privileges (Default: [])
+        list of privileges (Default: None)
 
     roles (list):
-        roles to inherit from (Default: [])
+        roles to inherit from (Default: None)
 
     CLI Example:
 
@@ -49,6 +49,11 @@ def create(name, description="", privileges=[], roles=[]):
 
         salt myminion nexus3_roles.create name=test_role description='test role' roles="['nx-admin']"
     """
+
+    if privileges is None:
+        privileges = []
+    if roles is None:
+        roles = []
 
     ret = {
         "role": {},

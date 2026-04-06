@@ -59,7 +59,7 @@ def absent(name):
 # Dev Note: there may be a better way of handling create/update
 # without requiring input for each argument
 def present(  # pylint: disable=invalid-name
-    name, password, emailAddress, firstName, lastName, roles=["nx-anonymous"], status="active"
+    name, password, emailAddress, firstName, lastName, roles=None, status="active"
 ):
     """
     name (str):
@@ -81,7 +81,7 @@ def present(  # pylint: disable=invalid-name
         last name
 
     roles (list):
-        list of roles (Default: ['nx-anonymous'])
+        list of roles (Default: None)
 
     status (str):
         user status [active|disabled] (Default: active)
@@ -108,6 +108,9 @@ def present(  # pylint: disable=invalid-name
             - status: disabled
 
     """
+
+    if roles is None:
+        roles = ["nx-anonymous"]
 
     ret = {"name": name, "changes": {}, "result": True, "comment": ""}
 

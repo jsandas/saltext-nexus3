@@ -59,7 +59,7 @@ def absent(name):
 def present(  # pylint: disable=invalid-name
     name,
     privilege_type,
-    actions=[],
+    actions=None,
     contentSelector=None,
     description="New Nexus privilege",
     domain=None,
@@ -76,7 +76,7 @@ def present(  # pylint: disable=invalid-name
         privilege type [application|repository-admin|respository-content-selector|repository-view|script|wildcard]
 
     actions (list):
-        list of actions [ADD|ALL|CREATE|DELETE|EDIT|READ|UPDATE] (Default: [])
+        list of actions [ADD|ALL|CREATE|DELETE|EDIT|READ|UPDATE] (Default: None)
 
     contentSelector (str):
         name of content selector (Default: None)
@@ -121,6 +121,9 @@ def present(  # pylint: disable=invalid-name
             - repository: '*'
             - privilege_type: repository-admin
     """
+
+    if actions is None:
+        actions = []
 
     ret = {"name": name, "changes": {}, "result": True, "comment": ""}
 

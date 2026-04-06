@@ -48,7 +48,7 @@ def group(
     docker_http_port=None,
     docker_https_port=None,
     docker_v1_enabled=False,
-    group_members=[],
+    group_members=None,
     strict_content_validation=True,
 ):
     """
@@ -82,7 +82,7 @@ def group(
         Enable v1 api support [True|False] (Default: False)
 
     group_members (list):
-        List of repositories in group (Default: [])
+        List of repositories in group (Default: None)
         .. note::
             The list cannot be empty.  An error will be returned
 
@@ -95,6 +95,9 @@ def group(
 
         salt myminion nexus3_repositories.group name=test-yum-group format=yum group_members=['test-yum']
     """
+
+    if group_members is None:
+        group_members = []
 
     ret = {
         "repository": {},
@@ -172,7 +175,7 @@ def hosted(
     apt_gpg_passphrase="",
     apt_gpg_priv_key="",
     blobstore="default",
-    cleanup_policies=[],
+    cleanup_policies=None,
     docker_force_auth=True,
     docker_http_port=None,
     docker_https_port=None,
@@ -211,7 +214,7 @@ def hosted(
         Name of blobstore to use (Default: default)
 
     cleanup_policies (list):
-        List of cleanup policies to apply to repository (Default: [])
+        List of cleanup policies to apply to repository (Default: None)
 
     docker_force_auth (bool):
         Force basic authentication [True|False] (Default: True)
@@ -255,6 +258,9 @@ def hosted(
 
         salt myminion nexus3_repositories.hosted name=test-yum format=yum yum_repodata_depth=3 yum_deploy_policy=permissive
     """
+
+    if cleanup_policies is None:
+        cleanup_policies = []
 
     ret = {
         "repository": {},
@@ -360,7 +366,7 @@ def proxy(
     blobstore="default",
     blocked=False,
     bower_rewrite_urls=True,
-    cleanup_policies=[],
+    cleanup_policies=None,
     content_max_age=1440,
     docker_force_auth=True,
     docker_http_port=None,
@@ -388,6 +394,9 @@ def proxy(
     strict_content_validation=True,
 ):
     """
+
+    if cleanup_policies is None:
+        cleanup_policies = []
     Nexus 3 supports many different formats.  The apt, bower, docker, maven2, and nuget formats have built-in arguments.
 
     name (str):
@@ -420,7 +429,7 @@ def proxy(
         Bower rewrite urls (Default: True)
 
     cleanup_policies (list):
-        List of cleanup policies to apply to repository (Default: [])
+        List of cleanup policies to apply to repository (Default: None)
 
     content_max_age (int):
         Max age of content cache in seconds (Default: 1440)

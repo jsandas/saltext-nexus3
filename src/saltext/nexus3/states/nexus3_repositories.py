@@ -72,7 +72,7 @@ def present(
     blobstore="default",
     blocked=False,
     bower_rewrite_urls=True,
-    cleanup_policies=[],
+    cleanup_policies=None,
     content_max_age=1440,
     docker_force_auth=True,
     docker_http_port=None,
@@ -82,7 +82,7 @@ def present(
     docker_path_enabled=False,
     docker_subdomain=None,
     docker_v1_enabled=False,
-    group_members=[],
+    group_members=None,
     http_retries=None,
     http_timeout=None,
     http_user_agent=None,
@@ -144,7 +144,7 @@ def present(
         Bower rewrite urls (Default: True)
 
     cleanup_policies (list):
-        List of cleanup policies to apply to repository (Default: [])
+        List of cleanup policies to apply to repository (Default: None)
 
     content_max_age (int):
         Max age of content cache in seconds (Default: 1440)
@@ -261,6 +261,11 @@ def present(
             - remote_url: https://yum.example.com
 
     """
+
+    if cleanup_policies is None:
+        cleanup_policies = []
+    if group_members is None:
+        group_members = []
 
     ret = {"name": name, "changes": {}, "result": True, "comment": ""}
 

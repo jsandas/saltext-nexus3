@@ -120,7 +120,7 @@ def reset():
     return ret
 
 
-def update(auth_realms=[]):
+def update(auth_realms=None):
     """
     auth_realms (list):
         list of realms in order they should be used
@@ -134,6 +134,9 @@ def update(auth_realms=[]):
 
         salt myminion nexus3_realms.update auth_realms="['NexusAuthenticatingRealm','NexusAuthorizingRealm','NpmToken','DockerToken']"
     """
+
+    if auth_realms is None:
+        auth_realms = []
 
     ret = {
         "realms": {},

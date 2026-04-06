@@ -32,7 +32,7 @@ PRIVILEGES_PATH = "v1/security/privileges"
 def create(  # pylint: disable=invalid-name
     name,
     privilege_type,
-    actions=[],
+    actions=None,
     contentSelector=None,
     description="New Nexus privilege",
     domain=None,
@@ -49,7 +49,7 @@ def create(  # pylint: disable=invalid-name
         privilege type [application|repository-admin|respository-content-selector|repository-view|script|wildcard]
 
     actions (list):
-        list of actions [ADD|ALL|BROWSE|CREATE|DELETE|EDIT|READ|UPDATE] (Default: [])
+        list of actions [ADD|ALL|BROWSE|CREATE|DELETE|EDIT|READ|UPDATE] (Default: None)
 
     contentSelector (str):
         name of content selector (Default: None
@@ -91,6 +91,9 @@ def create(  # pylint: disable=invalid-name
 
         salt myminion nexus3_privileges.create name=nx-repository-view-nuget-nuget-hosted-browse actions=['BROWSE'] description='Browse privilege for nuget-hosted repository views' repository_format=nuget repository=nuget-hosted type=repository-view
     """
+
+    if actions is None:
+        actions = []
 
     ret = {"privilege": {}}
 

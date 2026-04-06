@@ -30,7 +30,7 @@ USERS_PATH = "v1/security/users"
 
 
 def create(  # pylint: disable=invalid-name
-    name, password, emailAddress, firstName, lastName, roles=["nx-anonymous"], status="active"
+    name, password, emailAddress, firstName, lastName, roles=None, status="active"
 ):
     """
     name (str):
@@ -49,7 +49,7 @@ def create(  # pylint: disable=invalid-name
         last name
 
     roles (list):
-        list of roles (Default: ['nx-anonymous'])
+        list of roles (Default: None)
 
     status (str):
         user status [active|disabled] (Default: active)
@@ -64,6 +64,9 @@ def create(  # pylint: disable=invalid-name
             running this command via the command-line could result in the password being saved
             is the user shell history
     """
+
+    if roles is None:
+        roles = ["nx-anonymous"]
 
     ret = {
         "user": {},
