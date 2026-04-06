@@ -141,10 +141,10 @@ def reset_loaders_state(loaders):  # pragma: no cover
 
 
 @pytest.fixture(scope="module")
-def modules(loaders):  # pragma: no cover
+def loaded_modules(loaders):  # pragma: no cover
     return loaders.modules
 
 
 @pytest.fixture(scope="module")
-def states(loaders):  # pragma: no cover
+def loaded_states(loaders):  # pragma: no cover
     return loaders.states
