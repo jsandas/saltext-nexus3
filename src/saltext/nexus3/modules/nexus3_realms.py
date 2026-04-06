@@ -5,11 +5,7 @@ execution module for Nexus 3 security realms
 :configuration: In order to connect to Nexus 3, certain configuration is required
     in /etc/salt/minion on the relevant minions.
 
-    Example:
-      nexus3:
-        hostname: '127.0.0.1:8081'
-        username: 'admin'
-        password: 'admin123'
+    nexus3: hostname: '127.0.0.1:8081' username: 'admin' password: 'admin123'
 
 """
 
@@ -124,9 +120,7 @@ def update(auth_realms=None):
     """
     auth_realms (list):
         list of realms in order they should be used
-        .. note::
-            Include all desired realms in list as this will override
-            the current list
+        Include all desired realms in list as this will override the current list
 
     CLI Example:
 

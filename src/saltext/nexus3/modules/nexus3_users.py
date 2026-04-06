@@ -5,11 +5,7 @@ execution module for Nexus 3 users
 :configuration: In order to connect to Nexus 3, certain configuration is required
     in /etc/salt/minion on the relevant minions.
 
-    Example:
-      nexus3:
-        hostname: '127.0.0.1:8081'
-        username: 'admin'
-        password: 'admin123'
+    nexus3: hostname: '127.0.0.1:8081' username: 'admin' password: 'admin123'
 
 """
 
@@ -60,9 +56,7 @@ def create(  # pylint: disable=invalid-name
 
         salt myminion nexus3_users.create name=test_user emailAddress="fake@email.com" password=testpassword firstName=Test lastName=User roles="['nx-admin']"
 
-        .. note::
-            running this command via the command-line could result in the password being saved
-            is the user shell history
+        running this command via the command-line could result in the password being saved is the user shell history
     """
 
     if roles is None:
@@ -268,9 +262,7 @@ def update_password(name, password):
 
         salt myminion nexus3_users.update_password name=test_user password=testing123
 
-        .. note::
-            running this command via the command-line could result in the password being saved
-            is the user shell history
+        running this command via the command-line could result in the password being saved is the user shell history
     """
 
     ret = {

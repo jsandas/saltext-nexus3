@@ -5,11 +5,7 @@ state module for Nexus 3 security settings
 :configuration: In order to connect to Nexus 3, certain configuration is required
     in /etc/salt/minion on the relevant minions.
 
-    Example:
-      nexus3:
-        hostname: '127.0.0.1:8081'
-        username: 'admin'
-        password: 'admin123'
+    nexus3: hostname: '127.0.0.1:8081' username: 'admin' password: 'admin123'
 
 """
 
@@ -22,9 +18,7 @@ def anonymous_access(name, enabled):
     """
     name (str):
         state id name
-        .. note::
-            do not provide this argument, this is only here
-            because salt passes this arg always
+        do not provide this argument, this is only here because salt passes this arg always
 
     enabled (bool):
         enable or disable anonymous access [True|False]
@@ -77,15 +71,11 @@ def realms(name, auth_realms):
     """
     name (str):
         state id name
-        .. note::
-            do not provide this argument, this is only here
-            because salt passes this arg always
+        do not provide this argument, this is only here because salt passes this arg always
 
     auth_realms (list):
         list of realms in order they should be used
-        .. note::
-            Include all desired realms in list as this will override
-            the current list
+        Include all desired realms in list as this will override the current list
 
     .. code-block:: yaml
 

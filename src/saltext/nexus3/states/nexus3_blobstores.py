@@ -5,11 +5,7 @@ state module for Nexus 3 blobstores
 :configuration: In order to connect to Nexus 3, certain configuration is required
     in /etc/salt/minion on the relevant minions.
 
-    Example:
-      nexus3:
-        hostname: '127.0.0.1:8081'
-        username: 'admin'
-        password: 'admin123'
+    nexus3: hostname: '127.0.0.1:8081' username: 'admin' password: 'admin123'
 
 """
 
@@ -87,9 +83,7 @@ def present(
 
     quota_limit (int):
         Quota size in bytes (Default: 1000000)
-        .. note::
-            The limit should be no less than 1000000 bytes (1 MB) otherwise
-            it does not display properly in the UI.
+        The limit should be no less than 1000000 bytes (1 MB) otherwise it does not display properly in the UI.
 
     s3_access_key_id (str):
         AWS Access Key for S3 bucket (Default: '')
@@ -99,18 +93,15 @@ def present(
 
     s3_endpoint (str):
         custom URL for s3 api [http://localhost:9000] (Default: '')
-        .. note::
-            only required if using a s3 compatible service
+        only required if using a s3 compatible service
 
     s3_expiration (int):
         days until deleted blobs are purged from bucket (Default: 3)
-        .. note::
-            set to -1 to disable
+        set to -1 to disable
 
     s3_force_path_style (bool):
         force path style url format (Default: False)
-        .. note:
-            if using s3 compatible service like min.io, set this to True
+        if using s3 compatible service like min.io, set this to True
 
     s3_region (str):
         Region of S3 bucket [us-east-1,us-east-2,us-west-1,us-west-2,etc] (Default: 'Default')

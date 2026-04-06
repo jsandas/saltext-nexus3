@@ -5,11 +5,7 @@ execution module for Nexus 3 status check
 :configuration: In order to connect to Nexus 3, certain configuration is required
     in /etc/salt/minion on the relevant minions.
 
-    Example:
-      nexus3:
-        hostname: '127.0.0.1:8081'
-        username: 'admin'
-        password: 'admin123'
+    nexus3: hostname: '127.0.0.1:8081' username: 'admin' password: 'admin123'
 
 """
 

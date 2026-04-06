@@ -5,10 +5,7 @@ state module for working with the Nexus 3 Script API
 
 This module can be used for managing parts of Nexus that are not available in the rest api
 
-.. note::
-    Sonatype has disabled groovy script execution by default in recent versions
-    of Nexus 3.  See here for defaults.
-    https://help.sonatype.com/repomanager3/rest-and-integration-api/script-api
+Sonatype has disabled groovy script execution by default in recent versions of Nexus 3.  See here for defaults. https://help.sonatype.com/repomanager3/rest-and-integration-api/script-api
 
 Based on the work in ThoTeam's project for ansible (https://github.com/ansible-ThoTeam/nexus3-oss).
 The groovy scripts used by this state are copied from or based on the scripts
@@ -239,9 +236,7 @@ def base_url(name):
     name (str):
       URL to set base_url to for Nexus 3
 
-      .. note::
-        This would usually be the FQDN used
-        to access Nexus
+      This would usually be the FQDN used to access Nexus
 
     .. code-block:: yaml
 
@@ -308,9 +303,7 @@ def task(name, typeId, taskProperties, cron, setAlertEmail=None):  # pylint: dis
 
     taskProperties (dict):
         Dictionary of the task properties
-        .. note::
-            The key/values under task_properties is indented 4 spaces instead
-            of two.  This is how salt creates a dictionary from the yaml
+        The key/values under task_properties is indented 4 spaces instead of two.  This is how salt creates a dictionary from the yaml
 
     setAlertEmail (str):
         Email to send alerts to
@@ -318,19 +311,9 @@ def task(name, typeId, taskProperties, cron, setAlertEmail=None):  # pylint: dis
     cron (str):
         Cron-like string to schedule task runs
 
-        .. example::
-            '0 0 11 * 5 ?'
+        '0 0 11 * 5 ?'
 
-        .. note::
-            Cron schedule notes:
-            Field Name	Allowed Values
-            Seconds	    0-59
-            Minutes	    0-59
-            Hours	    0-23
-            Dayofmonth	1-31
-            Month	    1-12 or JAN-DEC
-            Dayofweek	1-7 or SUN-SAT
-            Year(optional)	empty, 1970-2099
+        Cron schedule notes: Field Name	Allowed Values Seconds	    0-59 Minutes	    0-59 Hours	    0-23 Dayofmonth	1-31 Month	    1-12 or JAN-DEC Dayofweek	1-7 or SUN-SAT Year(optional)	empty, 1970-2099
 
     Returns:
         str: metadata about task if successful

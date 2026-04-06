@@ -5,11 +5,7 @@ execution module for Nexus 3 email settings
 :configuration: In order to connect to Nexus 3, certain configuration is required
     in /etc/salt/minion on the relevant minions.
 
-    Example:
-      nexus3:
-        hostname: '127.0.0.1:8081'
-        username: 'admin'
-        password: 'admin123'
+    nexus3: hostname: '127.0.0.1:8081' username: 'admin' password: 'admin123'
 
 """
 
@@ -55,8 +51,7 @@ def configure(  # pylint: disable=invalid-name
 
     nexus_trust_store_enabled (bool):
         use nexus truststore [True|False] (Default: False)
-        .. note::
-            Ensure CA certificate is add to the Nexus trustore
+        Ensure CA certificate is add to the Nexus trustore
 
     password (str):
         smtp password (Default: None)
@@ -66,21 +61,18 @@ def configure(  # pylint: disable=invalid-name
 
     ssl_on_connect_enabled (bool):
         connect using tls (SMTPS) (Default: False)
-        .. note::
-            tls_connect and starttls should be mutually exclusive
+        tls_connect and starttls should be mutually exclusive
 
     ssl_server_identity_check_enabled (bool):
         verify server certificate (Default: False)
 
     start_tls_enabled (bool):
         enable starttls (Default: False)
-        .. note::
-            tls_connect and starttls should be mutually exclusive
+        tls_connect and starttls should be mutually exclusive
 
     start_tls_required (bool):
         require starttls (Default: False)
-        .. note::
-            tls_connect and starttls should be mutually exclusive
+        tls_connect and starttls should be mutually exclusive
 
     subjectPrefix (str):
         prefix for subject in emails (Default: None)

@@ -5,11 +5,7 @@ state module for Nexus 3 users
 :configuration: In order to connect to Nexus 3, certain configuration is required
     in /etc/salt/minion on the relevant minions.
 
-    Example:
-      nexus3:
-        hostname: '127.0.0.1:8081'
-        username: 'admin'
-        password: 'admin123'
+    nexus3: hostname: '127.0.0.1:8081' username: 'admin' password: 'admin123'
 
 """
 
@@ -70,9 +66,7 @@ def present(  # pylint: disable=invalid-name
 
     emailAddress (str):
         email address
-        .. note::
-            password will always be updated as there is not
-            a way to determine it's current value
+        password will always be updated as there is not a way to determine it's current value
 
     firstName (str):
         first name

@@ -5,11 +5,12 @@ execution module for Nexus 3 security privileges
 :configuration: In order to connect to Nexus 3, certain configuration is required
     in /etc/salt/minion on the relevant minions.
 
-    Example:
-      nexus3:
-        hostname: '127.0.0.1:8081'
-        username: 'admin'
-        password: 'admin123'
+        .. code-block:: yaml
+
+            nexus3:
+                hostname: '127.0.0.1:8081'
+                username: 'admin'
+                password: 'admin123'
 
 """
 
@@ -52,33 +53,27 @@ def create(  # pylint: disable=invalid-name
         list of actions [ADD|ALL|BROWSE|CREATE|DELETE|EDIT|READ|UPDATE] (Default: None)
 
     contentSelector (str):
-        name of content selector (Default: None
-        .. note::
-            required for respository-content-selector privilege type
-            content selector must exist before assigning privileges
+        name of content selector (Default: None)
+        required for respository-content-selector privilege type content selector must exist before assigning privileges
 
     description (str):
         description of privilge (Default: 'New Nexus privilege')
 
     domain (str):
         domain of privilege [roles|scripts|search|selectors|settings|ssl-truststore|tasks|users|userschangepw] (Default: None)
-        .. note::
-            required for application privilege type
+        required for application privilege type
 
     repository_format (str):
         respository format [bower|cocoapads|conan|docker|etc.] (Default: None)
-        .. note::
-            required for repository-admin, respository-content-selector, and repository-view privilege types
+        required for repository-admin, respository-content-selector, and repository-view privilege types
 
     pattern (regex):
         regex pattern to group other privileges (Default: None)
-        .. note::
-            required for wildcard privilege type
+        required for wildcard privilege type
 
     repository (str):
         repository name (Default: None)
-        .. note::
-            required for repository-admin, respository-content-selector, and repository-view privilege types
+        required for repository-admin, respository-content-selector, and repository-view privilege types
 
     scriptName (str):
         script name (Default: None)
@@ -274,31 +269,26 @@ def update(  # pylint: disable=invalid-name
 
     contentSelector (str):
         name of content selector (Default: None)
-        .. note::
-            content selector must exist before assigning privileges
+        content selector must exist before assigning privileges
 
     description (str):
         description of privilege (Default: None)
 
     domain (str):
         domain of privilege [roles|scripts|search|selectors|settings|ssl-truststore|tasks|users|userschangepw] (Default: None)
-        .. note::
-            required for application privilege type
+        required for application privilege type
 
     repository_format (str):
         respository format [bower|cocoapads|conan|docker|etc.] (Default: None)
-        .. note::
-            required for repository-admin, respository-content-selector, and repository-view privilege types
+        required for repository-admin, respository-content-selector, and repository-view privilege types
 
     pattern (regex):
         regex pattern to group other privileges (Default: None)
-        .. note::
-            required for wildcard privilege type
+        required for wildcard privilege type
 
     repository (str):
         repository name (Default: None)
-        .. note::
-            required for repository-admin, respository-content-selector, and repository-view privilege types
+        required for repository-admin, respository-content-selector, and repository-view privilege types
 
     scriptName (str):
         script name (Default: None)

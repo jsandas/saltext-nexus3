@@ -5,11 +5,7 @@ state module for Nexus 3 roles
 :configuration: In order to connect to Nexus 3, certain configuration is required
     in /etc/salt/minion on the relevant minions.
 
-    Example:
-      nexus3:
-        hostname: '127.0.0.1:8081'
-        username: 'admin'
-        password: 'admin123'
+    nexus3: hostname: '127.0.0.1:8081' username: 'admin' password: 'admin123'
 
 """
 
@@ -66,13 +62,11 @@ def present(name, description, privileges, roles):
 
     privileges (list):
         list of privileges
-        .. note::
-            requires at least an empty list
+        requires at least an empty list
 
     roles (list):
         roles to inherit from
-        .. note::
-            requires at least an empty list
+        requires at least an empty list
 
     .. code-block:: yaml
 

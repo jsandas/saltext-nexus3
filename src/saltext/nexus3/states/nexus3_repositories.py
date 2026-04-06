@@ -5,11 +5,7 @@ state module for Nexus 3 repositories
 :configuration: In order to connect to Nexus 3, certain configuration is required
     in /etc/salt/minion on the relevant minions.
 
-    Example:
-      nexus3:
-        hostname: '127.0.0.1:8081'
-        username: 'admin'
-        password: 'admin123'
+    nexus3: hostname: '127.0.0.1:8081' username: 'admin' password: 'admin123'
 
 """
 
@@ -111,8 +107,7 @@ def present(  # pylint: disable=too-many-arguments,too-many-locals,too-many-bran
 
     repository_format (str):
         Format of repository [apt|bower|cocoapads|conan|docker|maven2|etc.]
-        .. note::
-            This can be any officaly supported repository format for Nexus
+        This can be any officaly supported repository format for Nexus
 
     repository_type (str):
         Repository type [hosted|group|proxy]
@@ -128,8 +123,7 @@ def present(  # pylint: disable=too-many-arguments,too-many-locals,too-many-bran
 
     apt_gpg_priv_key (str):
         GPG signing private key (Default: '')
-        .. note::
-            This is require for hosted apt repositories
+        This is require for hosted apt repositories
 
     auto_block (bool):
         Auto-block upstream if too many errors (Default: True)
@@ -154,33 +148,27 @@ def present(  # pylint: disable=too-many-arguments,too-many-locals,too-many-bran
 
     docker_http_port (int):
         HTTP port for docker api (Default: None)
-        .. note::
-            Used if the server is behind a secure proxy
+        Used if the server is behind a secure proxy
 
     docker_https_port (int):
         HTTPS port for docker api (Default: None)
-        .. note::
-            Used if the server is configured for https
+        Used if the server is configured for https
 
     docker_index_type (str):
         Type of index for docker registry [REGISTRY|HUB|CUSTOM] (Default: HUB)
-        .. note::
-            If using CUSTOM then docker_index_url must be specified
+        If using CUSTOM then docker_index_url must be specified
 
     docker_index_url (str):
         Url for docker index (Default: None)
-        .. note::
-            If using CUSTOM then docker_index_url must be specified
+        If using CUSTOM then docker_index_url must be specified
 
     docker_path_enabled (bool):
         Enable path based docker proxy repositories [True|False] (Default: False)
-        .. note::
-            If true then subdomain will be set to None because path and subdomain are mutually exclusive in nexus
+        If true then subdomain will be set to None because path and subdomain are mutually exclusive in nexus
 
     docker_subdomain (str):
         Enable subdomain based docker proxy repositories (Default: None)
-        .. note::
-            If true then path will be set to false because path and subdomain are mutually exclusive in nexus
+        If true then path will be set to false because path and subdomain are mutually exclusive in nexus
 
     docker_v1_enabled (bool):
         Enable v1 api support [True|False] (Default: False)
@@ -220,15 +208,11 @@ def present(  # pylint: disable=too-many-arguments,too-many-locals,too-many-bran
 
     remote_auth_type (str):
         Authentication type for remote url [username|ntlm|bearerToken] (Default: username)
-        .. note::
-            Setting the bearerToken value currently does work with the REST API.  This will have to be set in the UI for now.
-            https://github.com/sonatype/nexus-public/issues/247
+        Setting the bearerToken value currently does work with the REST API.  This will have to be set in the UI for now. https://github.com/sonatype/nexus-public/issues/247
 
     remote_bearer_token (str):
         Bearer Token for remote url (Default: None)
-        .. note::
-            Setting the bearerToken value currently does work with the REST API.  This will have to be set in the UI for now.
-            https://github.com/sonatype/nexus-public/issues/247
+        Setting the bearerToken value currently does work with the REST API.  This will have to be set in the UI for now. https://github.com/sonatype/nexus-public/issues/247
 
     remote_password (str):
         Password for remote url (Default: None)

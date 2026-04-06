@@ -5,11 +5,7 @@ execution module for the Nexus 3 repositories
 :configuration: In order to connect to Nexus 3, certain configuration is required
     in /etc/salt/minion on the relevant minions.
 
-    Example:
-      nexus3:
-        hostname: '127.0.0.1:8081'
-        username: 'admin'
-        password: 'admin123'
+    nexus3: hostname: '127.0.0.1:8081' username: 'admin' password: 'admin123'
 
 """
 
@@ -59,8 +55,7 @@ def group(
 
     repository_format (str):
         Format of repository [bower|cocoapads|conan|docker|etc.]
-        .. note::
-            This can be any officaly supported repository format for Nexus
+        This can be any officaly supported repository format for Nexus
 
     blobstore (str):
         Name of blobstore to use (Default: default)
@@ -70,21 +65,18 @@ def group(
 
     docker_http_port (int):
         HTTP port for docker api (Default: None)
-        .. note::
-            Used if the server is behind a secure proxy
+        Used if the server is behind a secure proxy
 
     docker_https_port (int):
         HTTPS port for docker api (Default: None)
-        .. note::
-            Used if the server is configured for https
+        Used if the server is configured for https
 
     docker_v1_enabled (bool):
         Enable v1 api support [True|False] (Default: False)
 
     group_members (list):
         List of repositories in group (Default: None)
-        .. note::
-            The list cannot be empty.  An error will be returned
+        The list cannot be empty.  An error will be returned
 
     strict_content_validation (bool):
         Enable strict content type validation [True|False] (Default: True)
@@ -195,8 +187,7 @@ def hosted(
 
     repository_format (str):
         Format of repository [apt|bower|cocoapads|conan|docker|maven2|etc.]
-        .. note::
-            This can be any officaly supported repository format for Nexus
+        This can be any officaly supported repository format for Nexus
 
     apt_dist_name (str):
         Apt distribution name (Default: bionic)
@@ -206,9 +197,7 @@ def hosted(
 
     apt_gpg_priv_key (str):
         Base64 string of GPG signing private key (Default: '')
-        .. note::
-            create base64 string to preserve newline characters:
-              ?> base64 private-key.gpg
+        create base64 string to preserve newline characters: ?> base64 private-key.gpg
 
     blobstore (str):
         Name of blobstore to use (Default: default)
@@ -221,13 +210,11 @@ def hosted(
 
     docker_http_port (int):
         HTTP port for docker api (Default: None)
-        .. note::
-            Used if the server is behind a secure proxy
+        Used if the server is behind a secure proxy
 
     docker_https_port (int):
         HTTPS port for docker api (Default: None)
-        .. note::
-            Used if the server is configured for https
+        Used if the server is configured for https
 
     docker_v1_enabled (bool):
         Enable v1 api support [True|False] (Default: False)
@@ -394,9 +381,6 @@ def proxy(  # pylint: disable=too-many-locals
     strict_content_validation=True,
 ):
     """
-
-    if cleanup_policies is None:
-        cleanup_policies = []
     Nexus 3 supports many different formats.  The apt, bower, docker, maven2, and nuget formats have built-in arguments.
 
     name (str):
@@ -404,8 +388,7 @@ def proxy(  # pylint: disable=too-many-locals
 
     repository_format (str):
         Format of repository [apt|bower|cocoapads|conan|docker|maven2|etc.]
-        .. note::
-            This can be any officaly supported repository format for Nexus
+        This can be any officaly supported repository format for Nexus
 
     remote_url (str):
         Remote url to proxy
@@ -439,33 +422,27 @@ def proxy(  # pylint: disable=too-many-locals
 
     docker_http_port (int):
         HTTP port for docker api (Default: None)
-        .. note::
-            Used if the server is behind a secure proxy
+        Used if the server is behind a secure proxy
 
     docker_https_port (int):
         HTTPS port for docker api (Default: None)
-        .. note::
-            Used if the server is configured for https
+        Used if the server is configured for https
 
     docker_index_type (str):
         Type of index for docker registry [REGISTRY|HUB|CUSTOM] (Default: HUB)
-        .. note::
-            If using CUSTOM then docker_index_url must be specified
+        If using CUSTOM then docker_index_url must be specified
 
     docker_index_url (str):
         Url for docker index (Default: None)
-        .. note::
-            If using CUSTOM then docker_index_url must be specified
+        If using CUSTOM then docker_index_url must be specified
 
     docker_path_enabled (bool):
         Enable path based docker repositories [True|False] (Default: False)
-        .. note::
-            If true then subdomain will be set to None because path and subdomain are mutually exclusive in nexus
+        If true then subdomain will be set to None because path and subdomain are mutually exclusive in nexus
 
     docker_subdomain (str):
         Enable subdomain based docker repositories (Default: None)
-        .. note::
-            If true then path will be set to false because path and subdomain are mutually exclusive in nexus
+        If true then path will be set to false because path and subdomain are mutually exclusive in nexus
 
     docker_v1_enabled (bool):
         Enable v1 api support [True|False] (Default: False)
@@ -505,14 +482,10 @@ def proxy(  # pylint: disable=too-many-locals
 
     remote_auth_type (str):
         Authentication type for remote url [username|ntlm|bearerToken] (Default: username)
-        .. note::
-            Setting the bearerToken value currently does work with the REST API.  This will have to be set in the UI for now.
-            https://github.com/sonatype/nexus-public/issues/247
+        Setting the bearerToken value currently does work with the REST API.  This will have to be set in the UI for now. https://github.com/sonatype/nexus-public/issues/247
 
     remote_bearer_token (str):
-        .. note::
-            Setting the bearerToken value currently does work with the REST API.  This will have to be set in the UI for now.
-            https://github.com/sonatype/nexus-public/issues/247
+        Setting the bearerToken value currently does work with the REST API.  This will have to be set in the UI for now. https://github.com/sonatype/nexus-public/issues/247
 
     remote_password (str):
         Password for remote url (Default: None)
@@ -531,6 +504,9 @@ def proxy(  # pylint: disable=too-many-locals
 
         salt myminion nexus3_repositories.proxy name=test_apt format=apt remote_url=http://test.example.com remote_username=bob remote_password=testing apt_dist_name=bionic apt_flat_repo=False
     """
+
+    if cleanup_policies is None:
+        cleanup_policies = []
 
     ret = {
         "repository": {},
