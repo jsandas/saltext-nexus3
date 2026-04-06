@@ -36,7 +36,9 @@ def test_present_rejects_type_or_format_change(monkeypatch):
     )
     monkeypatch.setattr(nexus3_repositories, "__opts__", {"test": False}, raising=False)
 
-    ret = nexus3_repositories.present(name="repo-a", type="hosted", format="maven2")
+    ret = nexus3_repositories.present(
+        name="repo-a", repository_type="hosted", repository_format="maven2"
+    )
 
     assert ret["result"] is False
     assert "cannot be modified" in ret["comment"]
@@ -70,7 +72,9 @@ def test_present_group_no_drift_returns_desired_state(monkeypatch):
     )
     monkeypatch.setattr(nexus3_repositories, "__opts__", {"test": False}, raising=False)
 
-    ret = nexus3_repositories.present(name="repo-a", type="group", format="maven2")
+    ret = nexus3_repositories.present(
+        name="repo-a", repository_type="group", repository_format="maven2"
+    )
 
     assert ret["result"] is True
     assert "desired state" in ret["comment"]

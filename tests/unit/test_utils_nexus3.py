@@ -8,7 +8,7 @@ class _DummyResponse:
         self.content = content
 
 
-def _import_utils_module(monkeypatch, config_option_return):
+def _import_utils_module(config_option_return):
     sys.modules.pop("saltext.nexus3.utils.nexus3", None)
     mod = importlib.import_module("saltext.nexus3.utils.nexus3")
     mod.__opts__ = {"nexus3": config_option_return} if config_option_return else {}
@@ -16,8 +16,8 @@ def _import_utils_module(monkeypatch, config_option_return):
     return mod
 
 
-def test_get_config_uses_defaults_when_missing(monkeypatch):
-    mod = _import_utils_module(monkeypatch, config_option_return={})
+def test_get_config_uses_defaults_when_missing():
+    mod = _import_utils_module(config_option_return={})
 
     config = mod._get_config()
 
@@ -28,7 +28,6 @@ def test_get_config_uses_defaults_when_missing(monkeypatch):
 
 def test_post_uses_json_headers(monkeypatch):
     mod = _import_utils_module(
-        monkeypatch,
         config_option_return={
             "hostname": "http://nexus:8081",
             "username": "admin",
@@ -38,11 +37,12 @@ def test_post_uses_json_headers(monkeypatch):
 
     captured = {}
 
-    def _fake_post(url, auth, headers, data):
+    def _fake_post(url, auth, headers, data, timeout):
         captured["url"] = url
         captured["auth"] = auth
         captured["headers"] = headers
         captured["data"] = data
+        captured["timeout"] = timeout
         return _DummyResponse(status_code=201, content=b"created")
 
     monkeypatch.setattr(mod.requests, "post", _fake_post)
@@ -58,7 +58,6 @@ def test_post_uses_json_headers(monkeypatch):
 
 def test_post_uses_text_headers_for_string_payload(monkeypatch):
     mod = _import_utils_module(
-        monkeypatch,
         config_option_return={
             "hostname": "http://nexus:8081",
             "username": "admin",
@@ -68,9 +67,10 @@ def test_post_uses_text_headers_for_string_payload(monkeypatch):
 
     captured = {}
 
-    def _fake_post(url, auth, headers, data):
+    def _fake_post(_url, _auth, headers, data, timeout):
         captured["headers"] = headers
         captured["data"] = data
+        captured["timeout"] = timeout
         return _DummyResponse(status_code=204, content=b"")
 
     monkeypatch.setattr(mod.requests, "post", _fake_post)
