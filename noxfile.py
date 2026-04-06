@@ -432,7 +432,7 @@ def _get_docs_env(session):
     return env
 
 
-@nox.session(python="3")
+@nox.session(python="3.10")
 def docs(session):
     """
     Build Docs
@@ -459,7 +459,7 @@ def docs(session):
     os.chdir(str(REPO_ROOT))
 
 
-@nox.session(name="docs-dev", python="3")
+@nox.session(name="docs-dev", python="3.10")
 def docs_dev(session):
     """
     Build and serve the Sphinx HTML documentation, with live reloading on file changes, via sphinx-autobuild.
@@ -493,7 +493,7 @@ def docs_dev(session):
     session.run("sphinx-autobuild", *args, env=env)
 
 
-@nox.session(name="docs-crosslink-info", python="3")
+@nox.session(name="docs-crosslink-info", python="3.10")
 def docs_crosslink_info(session):
     """
     Report intersphinx cross links information

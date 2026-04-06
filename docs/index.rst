@@ -17,6 +17,7 @@ Salt Extension for interacting with Sonatype Nexus Repository 3
 
   ref/modules/index
   ref/states/index
+  ref/utils/index
 
 .. toctree::
   :maxdepth: 2

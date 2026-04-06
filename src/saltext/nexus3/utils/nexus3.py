@@ -2,6 +2,7 @@
 Common logic used by the nexus3 state and execution module
 
 :version: v0.4.0
+
 This module contains logic to accommodate nexus3/salt CLI usage
 """
 
