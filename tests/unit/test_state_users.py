@@ -82,7 +82,7 @@ def test_present_existing_user_updates_only_password_when_no_drift(monkeypatch):
     )
 
     assert ret["result"] is True
-    assert ret["changes"] == {}
+    assert not ret["changes"]
     assert "desired state" in ret["comment"]
     assert called["update_password"] == 1
     assert called["update"] == 0

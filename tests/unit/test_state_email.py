@@ -72,5 +72,5 @@ def test_configure_no_drift_is_desired_state(monkeypatch):
     ret = nexus3_email.configure(name="set-email", enabled=True)
 
     assert ret["result"] is True
-    assert ret["changes"] == {}
+    assert not ret["changes"]
     assert "desired state" in ret["comment"]

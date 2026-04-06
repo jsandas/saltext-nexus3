@@ -37,6 +37,6 @@ def test_present_existing_blobstore_no_drift_no_update_call(monkeypatch):
     ret = nexus3_blobstores.present(name="blob-a", quota_type=None)
 
     assert ret["result"] is True
-    assert ret["changes"] == {}
+    assert not ret["changes"]
     assert "desired state" in ret["comment"]
     assert called["update"] == 0
