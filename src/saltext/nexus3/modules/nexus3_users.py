@@ -185,7 +185,9 @@ def list_all():
     return ret
 
 
-def update(name, emailAddress=None, firstName=None, lastName=None, roles=None, status=None):  # pylint: disable=invalid-name
+def update(
+    name, emailAddress=None, firstName=None, lastName=None, roles=None, status=None
+):  # pylint: disable=invalid-name
     """
     name (str):
         name of user

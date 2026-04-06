@@ -127,7 +127,9 @@ def create(  # pylint: disable=invalid-name
 
     if privilege_type in ["repository-admin", "repository-view"]:
         if repository_format is None or repository is None:
-            ret["comment"] = f"repository_format and repository cannot be None for type {privilege_type}"
+            ret["comment"] = (
+                f"repository_format and repository cannot be None for type {privilege_type}"
+            )
             return ret
         payload.update(repository)
 

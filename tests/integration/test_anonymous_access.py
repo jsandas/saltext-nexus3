@@ -15,7 +15,7 @@ def test_describe_anonymous_access():
     # print(ret)
     assert ret["test.minion"]["anonymous_access"] != {}, "anonymous_access is empty"
     assert (
-        ret["test.minion"]["anonymous_access"]["enabled"] == False
+        ret["test.minion"]["anonymous_access"]["enabled"] is False
     ), "anonymous_access should be disabled"
 
 
@@ -24,7 +24,7 @@ def test_update_anonymous_access():
     # print(ret)
     assert ret["test.minion"]["anonymous_access"] != {}, "anonymous_access is empty"
     assert (
-        ret["test.minion"]["anonymous_access"]["enabled"] == True
+        ret["test.minion"]["anonymous_access"]["enabled"] is True
     ), "anonymous_access should be enabled"
 
     # reset
@@ -57,8 +57,10 @@ def test_annonymous_access_state():
     test_cleanup()
     ret = client.cmd("test.minion", "state.apply", ["nexus3.anonymous_access"])
     #     # pp.pprint(ret['test.minion'])
-    id = f"nexus3_security_|-set_anonymous_access_true_|-set_anonymous_access_true_|-anonymous_access"
-    output = ret["test.minion"][id]
+    state_id = (
+        "nexus3_security_|-set_anonymous_access_true_|-set_anonymous_access_true_|-anonymous_access"
+    )
+    output = ret["test.minion"][state_id]
     assert (
         state_test_data["results"]["result"] == output["result"]
     ), f"wrong state result! expected: \"{state_test_data['results']['result']}\" got: \"{output['result']}\""

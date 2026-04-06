@@ -85,7 +85,7 @@ def test_proxy():
     data = ret["test.minion"]["repository"]
     assert data["name"] == "test-apt-proxy", "repo name is incorrect"
     assert data["proxy"]["remoteUrl"] == "https://randomurl.com", "remoteUrl is incorrect"
-    assert data["apt"]["flat"] == False, "apt flat is incorrect"
+    assert data["apt"]["flat"] is False, "apt flat is incorrect"
 
 
 def test_proxy_with_auth():
@@ -129,7 +129,7 @@ def test_proxy_docker_path_enabled():
     # print(ret)
     data = ret["test.minion"]["repository"]
     assert data["name"] == "test-docker-path-module", "repo name is incorrect"
-    assert data["docker"]["pathEnabled"] == True, "pathEnabled should be True"
+    assert data["docker"]["pathEnabled"] is True, "pathEnabled should be True"
     assert (
         data["docker"]["subdomain"] is None
     ), "subdomain must be None when path routing is enabled"
@@ -154,7 +154,7 @@ def test_proxy_docker_subdomain():
     data = ret["test.minion"]["repository"]
     assert data["name"] == "test-docker-subdomain-module", "repo name is incorrect"
     assert data["docker"]["subdomain"] == "registry-module", "subdomain is incorrect"
-    assert data["docker"]["pathEnabled"] == False, "pathEnabled must be False when subdomain is set"
+    assert data["docker"]["pathEnabled"] is False, "pathEnabled must be False when subdomain is set"
 
 
 def test_proxy_docker_switch_path_to_subdomain():
@@ -177,7 +177,7 @@ def test_proxy_docker_switch_path_to_subdomain():
         data["docker"]["subdomain"] == "registry-path-switch"
     ), "subdomain should be set after switching from path"
     assert (
-        data["docker"]["pathEnabled"] == False
+        data["docker"]["pathEnabled"] is False
     ), "pathEnabled must be False after switching to subdomain"
 
 
@@ -198,7 +198,7 @@ def test_proxy_docker_switch_subdomain_to_path():
     # print(ret)
     data = ret["test.minion"]["repository"]
     assert (
-        data["docker"]["pathEnabled"] == True
+        data["docker"]["pathEnabled"] is True
     ), "pathEnabled must be True after switching from subdomain"
     assert (
         data["docker"]["subdomain"] is None
@@ -223,7 +223,7 @@ def test_describe():
     ), "repository test-apt-proxy not found"
     assert ret["test.minion"]["repository"]["format"] == "apt", "wrong format found"
     assert ret["test.minion"]["repository"]["type"] == "proxy", "wrong type found"
-    assert ret["test.minion"]["repository"]["apt"]["flat"] == False, "apt flat is incorrect"
+    assert ret["test.minion"]["repository"]["apt"]["flat"] is False, "apt flat is incorrect"
 
 
 ## States Integration Tests ##
@@ -365,8 +365,8 @@ def test_apt_repository_state():
     ret = client.cmd("test.minion", "state.apply", ["nexus3.repositories", f"pillar={pillar}"])
     # print(ret['test.minion'])
     for key, values in state_test_apt_data["results"].items():
-        id = f"nexus3_repositories_|-repositories_{key}_|-{key}_|-present"
-        output = ret["test.minion"][id]
+        state_id = f"nexus3_repositories_|-repositories_{key}_|-{key}_|-present"
+        output = ret["test.minion"][state_id]
         assert (
             values["result"] == output["result"]
         ), f"wrong state result! expected: \"{values['result']}\" got: \"{output['result']}\""
@@ -487,8 +487,8 @@ def test_docker_repository_state():
     ret = client.cmd("test.minion", "state.apply", ["nexus3.repositories", f"pillar={pillar}"])
     # print(ret['test.minion'])
     for key, values in state_test_docker_data["results"].items():
-        id = f"nexus3_repositories_|-repositories_{key}_|-{key}_|-present"
-        output = ret["test.minion"][id]
+        state_id = f"nexus3_repositories_|-repositories_{key}_|-{key}_|-present"
+        output = ret["test.minion"][state_id]
         assert (
             values["result"] == output["result"]
         ), f"wrong state result! expected: \"{values['result']}\" got: \"{output['result']}\""
@@ -659,8 +659,8 @@ def test_docker_path_routing_state():
     ret = client.cmd("test.minion", "state.apply", ["nexus3.repositories", f"pillar={pillar}"])
     # print(ret['test.minion'])
     for key, values in state_test_docker_path_data["results"].items():
-        id = f"nexus3_repositories_|-repositories_{key}_|-{key}_|-present"
-        output = ret["test.minion"][id]
+        state_id = f"nexus3_repositories_|-repositories_{key}_|-{key}_|-present"
+        output = ret["test.minion"][state_id]
         assert (
             values["result"] == output["result"]
         ), f"wrong state result! expected: \"{values['result']}\" got: \"{output['result']}\""
@@ -683,8 +683,8 @@ def test_docker_subdomain_routing_state():
     ret = client.cmd("test.minion", "state.apply", ["nexus3.repositories", f"pillar={pillar}"])
     # print(ret['test.minion'])
     for key, values in state_test_docker_subdomain_data["results"].items():
-        id = f"nexus3_repositories_|-repositories_{key}_|-{key}_|-present"
-        output = ret["test.minion"][id]
+        state_id = f"nexus3_repositories_|-repositories_{key}_|-{key}_|-present"
+        output = ret["test.minion"][state_id]
         assert (
             values["result"] == output["result"]
         ), f"wrong state result! expected: \"{values['result']}\" got: \"{output['result']}\""
@@ -704,9 +704,9 @@ def test_docker_routing_idempotent_state():
     pillar = state_test_docker_path_data["pillar"]
     ret = client.cmd("test.minion", "state.apply", ["nexus3.repositories", f"pillar={pillar}"])
     # print(ret['test.minion'])
-    id = "nexus3_repositories_|-repositories_docker-proxy-path-state_|-docker-proxy-path-state_|-present"
-    output = ret["test.minion"][id]
-    assert output["result"] == True, f"state should succeed: {output['result']}"
+    state_id = "nexus3_repositories_|-repositories_docker-proxy-path-state_|-docker-proxy-path-state_|-present"
+    output = ret["test.minion"][state_id]
+    assert output["result"] is True, f"state should succeed: {output['result']}"
     assert output["changes"] == {}, f"no changes expected on re-apply, got: {output['changes']}"
     assert "desired state" in output["comment"], f"unexpected comment: {output['comment']}"
 
@@ -738,10 +738,10 @@ def test_docker_routing_switch_path_to_subdomain_state():
         "test.minion", "state.apply", ["nexus3.repositories", f"pillar={switch_pillar}"]
     )
     # print(ret['test.minion'])
-    id = "nexus3_repositories_|-repositories_docker-proxy-path-state_|-docker-proxy-path-state_|-present"
-    output = ret["test.minion"][id]
+    state_id = "nexus3_repositories_|-repositories_docker-proxy-path-state_|-docker-proxy-path-state_|-present"
+    output = ret["test.minion"][state_id]
     assert (
-        output["result"] == True
+        output["result"] is True
     ), f"state should succeed after routing switch: {output['result']}"
     assert output["changes"] != {}, "changes must be non-empty when routing mode switches"
     docker_section = output["changes"]["docker"]
@@ -749,7 +749,7 @@ def test_docker_routing_switch_path_to_subdomain_state():
         docker_section["subdomain"] == "registry-path-state-switch"
     ), f"subdomain should be updated, got: {docker_section['subdomain']}"
     assert (
-        docker_section["pathEnabled"] == False
+        docker_section["pathEnabled"] is False
     ), f"pathEnabled must be False after switch to subdomain, got: {docker_section['pathEnabled']}"
 
 
@@ -780,15 +780,15 @@ def test_docker_routing_switch_subdomain_to_path_state():
         "test.minion", "state.apply", ["nexus3.repositories", f"pillar={switch_pillar}"]
     )
     # print(ret['test.minion'])
-    id = "nexus3_repositories_|-repositories_docker-proxy-subdomain-state_|-docker-proxy-subdomain-state_|-present"
-    output = ret["test.minion"][id]
+    state_id = "nexus3_repositories_|-repositories_docker-proxy-subdomain-state_|-docker-proxy-subdomain-state_|-present"
+    output = ret["test.minion"][state_id]
     assert (
-        output["result"] == True
+        output["result"] is True
     ), f"state should succeed after routing switch: {output['result']}"
     assert output["changes"] != {}, "changes must be non-empty when routing mode switches"
     docker_section = output["changes"]["docker"]
     assert (
-        docker_section["pathEnabled"] == True
+        docker_section["pathEnabled"] is True
     ), f"pathEnabled must be True after switch from subdomain, got: {docker_section['pathEnabled']}"
     assert (
         docker_section["subdomain"] is None
@@ -879,8 +879,8 @@ def test_raw_repository_state():
     ret = client.cmd("test.minion", "state.apply", ["nexus3.repositories", f"pillar={pillar}"])
     # print(ret['test.minion'])
     for key, values in state_test_raw_data["results"].items():
-        id = f"nexus3_repositories_|-repositories_{key}_|-{key}_|-present"
-        output = ret["test.minion"][id]
+        state_id = f"nexus3_repositories_|-repositories_{key}_|-{key}_|-present"
+        output = ret["test.minion"][state_id]
         assert (
             values["result"] == output["result"]
         ), f"wrong state result! expected: \"{values['result']}\" got: \"{output['result']}\""

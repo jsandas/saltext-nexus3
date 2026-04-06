@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import pprint
-import sys
 
 import salt.client
 
@@ -38,7 +37,7 @@ def test_create_blobstore():
         try:
             _create_blobstore(name, values)
             blobstores.append(name)
-        except:
+        except AssertionError:
             print(f" Failed creating blobstore {name}")
 
 
@@ -52,7 +51,7 @@ def _create_blobstore(name, values):
     assert ret["test.minion"]["blobstore"]["name"] == name, f"blobstore {name} not created"
     assert (
         ret["test.minion"]["blobstore"]["type"] == values["results"]["type"]
-    ), "wrong store type {} found".format(values["results"]["type"])
+    ), f"wrong store type {values['results']['type']} found"
 
 
 def test_list_blobstores():
@@ -60,9 +59,9 @@ def test_list_blobstores():
     # print(ret)
     count = len(blobstores)
     assert ret["test.minion"]["blobstores"] != {}, "data is empty"
-    assert len(ret["test.minion"]["blobstores"]) != count, "blobstore count {}, expected {}".format(
-        len(ret["test.minion"]["blobstores"]), count
-    )
+    assert (
+        len(ret["test.minion"]["blobstores"]) == count
+    ), f"blobstore count {len(ret['test.minion']['blobstores'])}, expected {count}"
 
 
 def test_delete_blobstore():
@@ -136,8 +135,8 @@ def test_blobstores_state():
     ret = client.cmd("test.minion", "state.apply", ["nexus3.blobstores", f"pillar={pillar}"])
     # pp.pprint(ret['test.minion'])
     for key, values in state_test_data["results"].items():
-        id = f"nexus3_blobstores_|-create_blobstore_{key}_|-{key}_|-present"
-        output = ret["test.minion"][id]
+        state_id = f"nexus3_blobstores_|-create_blobstore_{key}_|-{key}_|-present"
+        output = ret["test.minion"][state_id]
         assert values["result"] == output["result"], (
             f"[{key}] wrong state result! expected: \"{values['result']}\" got: \"{output['result']}\"\n"
             f"  comment: {output['comment']}\n"
@@ -179,8 +178,8 @@ def test_blobstores_state2():
     )
     # pp.pprint(ret['test.minion'])
     for key, values in state_test_data2["results"].items():
-        id = f"nexus3_blobstores_|-create_blobstore_{key}_|-{key}_|-present"
-        output = ret["test.minion"][id]
+        state_id = f"nexus3_blobstores_|-create_blobstore_{key}_|-{key}_|-present"
+        output = ret["test.minion"][state_id]
         assert (
             values["result"] == output["result"]
         ), f"wrong state result! expected: \"{values['result']}\" got: \"{output['result']}\""

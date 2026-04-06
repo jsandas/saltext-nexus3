@@ -28,9 +28,11 @@ def test_configure_email():
 
     assert ret["test.minion"]["email"]["port"] == 587, "port incorrect"
 
-    assert ret["test.minion"]["email"]["from_address"] == "test@example.com", "from_address incorrect"
+    assert (
+        ret["test.minion"]["email"]["from_address"] == "test@example.com"
+    ), "from_address incorrect"
 
-    assert ret["test.minion"]["email"]["start_tls_enabled"] == True, "start_tls_enabled incorrect"
+    assert ret["test.minion"]["email"]["start_tls_enabled"] is True, "start_tls_enabled incorrect"
 
 
 def test_describe_email():
@@ -53,8 +55,10 @@ def test_describe_email():
 
     assert ret["test.minion"]["email"]["port"] == 465, "port incorrect"
 
-    assert ret["test.minion"]["email"]["from_address"] == "test@example.com", "from_address incorrect"
+    assert (
+        ret["test.minion"]["email"]["from_address"] == "test@example.com"
+    ), "from_address incorrect"
 
     assert (
-        ret["test.minion"]["email"]["ssl_on_connect_enabled"] == True
+        ret["test.minion"]["email"]["ssl_on_connect_enabled"] is True
     ), "ssl_on_connect_enabled incorrect"
