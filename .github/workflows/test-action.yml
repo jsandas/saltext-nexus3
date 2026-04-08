@@ -272,10 +272,6 @@ jobs:
         image: sonatype/nexus3:3.73.0
         ports:
           - 8081:8081
-        env:
-          INSTALL4J_ADD_VM_PARAMS: >-
-            -Dnexus.security.randompassword=false
-            -Dnexus.security.initial.password=admin123
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
@@ -307,6 +303,26 @@ jobs:
           done
           curl -sSf http://127.0.0.1:8081 >/dev/null
 
+      - name: Read Nexus Admin Password
+        run: |
+          cid=$(docker ps --filter "ancestor=sonatype/nexus3:3.73.0" --format '{{.ID}}' | head -n1)
+          if [ -z "$cid" ]; then
+            echo "Could not find running Nexus container"
+            exit 1
+          fi
+
+          password=$(docker exec "$cid" cat /nexus-data/admin.password)
+          if [ -z "$password" ]; then
+            echo "Nexus admin password file is empty"
+            exit 1
+          fi
+
+          {
+            echo "NEXUS3_HOSTNAME=http://127.0.0.1:8081"
+            echo "NEXUS3_USERNAME=admin"
+            echo "NEXUS3_PASSWORD=$password"
+          } >> "$GITHUB_ENV"
+
       - name: Install Test Requirements
         env:
           SALT_REQUIREMENT: salt==3007.13
@@ -317,6 +333,9 @@ jobs:
         env:
           SALT_REQUIREMENT: salt==3007.13
           SKIP_REQUIREMENTS_INSTALL: true
+          NEXUS3_HOSTNAME: ${{ env.NEXUS3_HOSTNAME }}
+          NEXUS3_USERNAME: ${{ env.NEXUS3_USERNAME }}
+          NEXUS3_PASSWORD: ${{ env.NEXUS3_PASSWORD }}
         run: |
           nox --force-color -e tests-3 -- -vv --instafail tests/integration
 

@@ -1,16 +1,3 @@
-import pytest
-
-
-@pytest.fixture(autouse=True)
-def _require_nexus_api_ready(salt_call_cli):
-    """
-    Only run live tests when Nexus is reachable and Salt module auth works.
-    """
-    ret = salt_call_cli.run("nexus3_status.check")
-    if ret.exitcode != 0 or not ret.json or "status" not in ret.json:
-        pytest.skip("Nexus API not yet ready/authenticated for live integration tests")
-
-
 def test_status_check_module(salt_call_cli):
     ret = salt_call_cli.run("nexus3_status.check")
 
