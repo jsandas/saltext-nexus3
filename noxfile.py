@@ -162,6 +162,16 @@ def tests(session):
         "COVERAGE_PROCESS_START": str(REPO_ROOT / ".coveragerc"),
     }
 
+    # On macOS, Salt's libcrypto loader calls `brew --prefix` via su, which
+    # fails in non-interactive shells. Setting HOMEBREW_PREFIX lets Salt skip
+    # the brew subprocess and find OpenSSL directly.
+    if sys.platform == "darwin" and "HOMEBREW_PREFIX" not in os.environ:
+        brew = shutil.which("brew")
+        if brew:
+            result = session.run("brew", "--prefix", silent=True, log=False, external=True)
+            if result:
+                env["HOMEBREW_PREFIX"] = result.strip()
+
     session.run("coverage", "erase")
     args = [
         "--rootdir",
