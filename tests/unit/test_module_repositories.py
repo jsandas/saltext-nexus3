@@ -142,3 +142,99 @@ def test_proxy_update_path_for_existing_repository(monkeypatch):
     assert ret["repository"]["name"] == "docker-proxy-a"
     assert client.calls[0][0] == "put"
     assert client.calls[0][1] == "v1/repositories/docker/proxy/docker-proxy-a"
+
+
+def test_group_create_uses_maven_path_and_members(monkeypatch):
+    client = _Client({("post", "v1/repositories/maven/group"): {"status": 201, "body": ""}})
+    monkeypatch.setattr(nexus3_repositories.nexus3, "NexusClient", lambda: client)
+
+    describe_calls = {"count": 0}
+
+    def _describe(name):
+        describe_calls["count"] += 1
+        if describe_calls["count"] == 1:
+            return {"repository": {}}
+        return {"repository": {"name": name, "group": {"memberNames": ["repo-a"]}}}
+
+    monkeypatch.setattr(nexus3_repositories, "describe", _describe)
+
+    ret = nexus3_repositories.group(
+        name="group-a",
+        repository_format="maven2",
+        group_members=["repo-a"],
+    )
+
+    assert ret["repository"]["name"] == "group-a"
+    method, path, payload = client.calls[0]
+    assert method == "post"
+    assert path == "v1/repositories/maven/group"
+    assert payload["group"]["memberNames"] == ["repo-a"]
+
+
+def test_group_update_error_sets_error_payload(monkeypatch):
+    client = _Client(
+        {("put", "v1/repositories/docker/group/group-a"): {"status": 500, "body": "nope"}}
+    )
+    monkeypatch.setattr(nexus3_repositories.nexus3, "NexusClient", lambda: client)
+    monkeypatch.setattr(
+        nexus3_repositories, "describe", lambda _name: {"repository": {"name": "group-a"}}
+    )
+
+    ret = nexus3_repositories.group(
+        name="group-a",
+        repository_format="docker",
+        group_members=["repo-a"],
+    )
+
+    assert "could not update repository" in ret["comment"]
+    assert ret["error"]["code"] == 500
+
+
+def test_hosted_create_yum_payload(monkeypatch):
+    client = _Client({("post", "v1/repositories/yum/hosted"): {"status": 201, "body": ""}})
+    monkeypatch.setattr(nexus3_repositories.nexus3, "NexusClient", lambda: client)
+
+    describe_calls = {"count": 0}
+
+    def _describe(name):
+        describe_calls["count"] += 1
+        if describe_calls["count"] == 1:
+            return {"repository": {}}
+        return {"repository": {"name": name, "yum": {"repodataDepth": 3}}}
+
+    monkeypatch.setattr(nexus3_repositories, "describe", _describe)
+
+    ret = nexus3_repositories.hosted(
+        name="yum-hosted-a",
+        repository_format="yum",
+        yum_repodata_depth=3,
+        yum_deploy_policy="permissive",
+    )
+
+    assert ret["repository"]["name"] == "yum-hosted-a"
+    method, path, payload = client.calls[0]
+    assert method == "post"
+    assert path == "v1/repositories/yum/hosted"
+    assert payload["yum"]["repodataDepth"] == 3
+    assert payload["yum"]["deployPolicy"] == "PERMISSIVE"
+
+
+def test_hosted_update_error_sets_error_payload(monkeypatch):
+    client = _Client(
+        {("put", "v1/repositories/docker/hosted/docker-hosted-a"): {"status": 400, "body": "bad"}}
+    )
+    monkeypatch.setattr(nexus3_repositories.nexus3, "NexusClient", lambda: client)
+    monkeypatch.setattr(
+        nexus3_repositories,
+        "describe",
+        lambda _name: {"repository": {"name": "docker-hosted-a"}},
+    )
+
+    ret = nexus3_repositories.hosted(
+        name="docker-hosted-a",
+        repository_format="docker",
+        docker_http_port=5000,
+    )
+
+    assert "could not update repository" in ret["comment"]
+    assert ret["error"]["code"] == 400
