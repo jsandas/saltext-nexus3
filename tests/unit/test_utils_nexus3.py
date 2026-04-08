@@ -67,7 +67,9 @@ def test_post_uses_text_headers_for_string_payload(monkeypatch):
 
     captured = {}
 
-    def _fake_post(_url, _auth, headers, data, timeout):
+    def _fake_post(url, auth, headers, data, timeout):
+        captured["url"] = url
+        captured["auth"] = auth
         captured["headers"] = headers
         captured["data"] = data
         captured["timeout"] = timeout

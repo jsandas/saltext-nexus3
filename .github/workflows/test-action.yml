@@ -47,7 +47,7 @@ jobs:
           SALT_REQUIREMENT: salt==${{ matrix.salt-version }}
           SKIP_REQUIREMENTS_INSTALL: true
         run: |
-          nox --force-color -e tests-3 -- -vv --instafail tests/
+          nox --force-color -e tests-3 -- -vv --instafail tests/unit tests/functional
 
       - name: Create CodeCov Flags
         if: always()
@@ -136,7 +136,7 @@ jobs:
           SKIP_REQUIREMENTS_INSTALL: true
         run: |
           export PATH="/C/Program Files (x86)/Windows Kits/10/bin/10.0.18362.0/x64;$PATH"
-          nox --force-color -e tests-3 -- -vv --instafail tests/
+          nox --force-color -e tests-3 -- -vv --instafail tests/unit tests/functional
 
       - name: Create CodeCov Flags
         if: always()
@@ -220,7 +220,7 @@ jobs:
           SALT_REQUIREMENT: salt==${{ matrix.salt-version }}
           SKIP_REQUIREMENTS_INSTALL: true
         run: |
-          nox --force-color -e tests-3 -- -vv --instafail tests/
+          nox --force-color -e tests-3 -- -vv --instafail tests/unit tests/functional
 
       - name: Create CodeCov Flags
         if: always()
@@ -262,3 +262,73 @@ jobs:
         uses: ./.github/actions/upload-exitstatus
         with:
           name: ${{ github.job }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}
+
+  Integration-Linux:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+
+    services:
+      nexus3:
+        image: sonatype/nexus3:3.73.0
+        ports:
+          - 8081:8081
+        env:
+          INSTALL4J_ADD_VM_PARAMS: >-
+            -Dnexus.security.randompassword=false
+            -Dnexus.security.initial.password=admin123
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          fetch-depth: 2
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6.2.0
+        with:
+          python-version: "3.10"
+
+      - name: Install Nox
+        run: |
+          python -m pip install --upgrade pip
+          pip install "nox==$NOX_VERSION" "uv==$UV_VERSION"
+        env:
+          NOX_VERSION: '2026.2.9'
+          UV_VERSION: '0.10.11'
+
+      - name: Wait For Nexus
+        run: |
+          for _ in {1..90}; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8081/service/rest/v1/status || true)
+            if [ "$code" = "200" ] || [ "$code" = "401" ] || [ "$code" = "403" ]; then
+              echo "Nexus is reachable"
+              break
+            fi
+            sleep 5
+          done
+          curl -sSf http://127.0.0.1:8081 >/dev/null
+
+      - name: Install Test Requirements
+        env:
+          SALT_REQUIREMENT: salt==3007.13
+        run: |
+          nox --force-color -e tests-3 --install-only
+
+      - name: Integration Test
+        env:
+          SALT_REQUIREMENT: salt==3007.13
+          SKIP_REQUIREMENTS_INSTALL: true
+        run: |
+          nox --force-color -e tests-3 -- -vv --instafail tests/integration
+
+      - name: Upload Logs
+        if: always()
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
+        with:
+          name: runtests-integration-${{ runner.os }}.log
+          path: artifacts/runtests-*.log
+
+      - name: Upload Exit Status
+        if: always()
+        uses: ./.github/actions/upload-exitstatus
+        with:
+          name: ${{ github.job }}-Py3.10-Salt3007.13
