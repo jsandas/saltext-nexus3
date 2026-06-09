@@ -1,91 +1,58 @@
-PASSWORD=$$(docker exec nexus3 bash -c 'cat /nexus-data/admin.password')
-COMPOSE_FILE=docker-compose.yml
+GREEN  := $(shell tput -Txterm setaf 2)
+YELLOW := $(shell tput -Txterm setaf 3)
+BOLD   := $(shell tput -Txterm bold)
+ULINE  := $(shell tput -Txterm smul)
+RESET  := $(shell tput -Txterm sgr0)
 
-.PHONY: start start_nexus stop integration reload clean shell docs docs-check docs-sphinx set-version test test-integration lint format changelog-draft sync-src
+.DEFAULT_GOAL:=help
 
-start: start_nexus
-	@echo "==> target=start COMPOSE_FILE=$(COMPOSE_FILE)"
-	@docker compose --progress quiet -f $(COMPOSE_FILE) pull
-	@docker compose -f $(COMPOSE_FILE) up -d
 
-	@sleep 5
-	@echo " installing package in salt containers..."
-	@docker exec salt-master sh -c 'python3 -m pip install -e /workspace >/dev/null'
-	@docker exec salt-minion sh -c 'python3 -m pip install -e /workspace >/dev/null'
-	@docker restart salt-minion > /dev/null
+.PHONY: help
+help:
+	@echo ''
+	@echo '${ULINE}Usage:${RESET}'
+	@echo '    ${YELLOW}make${RESET} ${GREEN}<TARGET>${RESET}'
+	@echo ''
+	@echo ''
+	@echo '${ULINE}Targets:${RESET}'
+	@awk 'BEGIN {FS = ":.*?## "} { \
+		if (/^[a-zA-Z_-]+:.*?##.*$$/) {printf "     ${BOLD}${GREEN}%-20s${RESET}%s\n", $$1, $$2} \
+		else if (/^## .*$$/) {printf "\n  ${CYAN}[%s]${RESET}\n", substr($$1,4)} \
+		}' $(MAKEFILE_LIST)
 
-	@sleep 10
-	@echo " syncing files with minion..."
-	@docker exec salt-master sh -c 'salt \* saltutil.sync_all' > /dev/null 2>&1
+## Lifecycle
 
-start_nexus:
-	@echo "==> target=start_nexus COMPOSE_FILE=$(COMPOSE_FILE)"
-	@docker compose --progress quiet -f $(COMPOSE_FILE) pull
-	@docker compose -f $(COMPOSE_FILE) up -d nexus3
+.PHONY: dev
+dev: ## Create dev venv, (re-)install project in it
+	@python tools/initialize.py
 
-	@./bin/check_nexus.sh
+.PHONY: clean
+clean: ## Remove: project/nox venvs, built docs
+	@rm -rf .nox .venv docs/_build
 
-	@echo
-	@echo "admin password:"
-	@docker exec nexus3 bash -c 'cat /nexus-data/admin.password'
-	@echo
-	@echo "NEXUS_PASSWORD=$(PASSWORD)" > .env
-	@echo "NEXUS_PASSWORD=$(PASSWORD)" > $(dir $(COMPOSE_FILE)).env
+## Docs
 
-stop:
-	@docker compose -f $(COMPOSE_FILE) stop
+.PHONY: docs
+changelog: dev ## Render changelog. Requires VERSION parameter.
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Missing VERSION parameter. Example: make changelog VERSION=1.0.0" >&2; exit 1; \
+	fi; \
+    source .venv/bin/activate; \
+	towncrier build --yes --version='$(VERSION)'
 
-integration: clean
-	@echo "==> target=integration: invoking start with COMPOSE_FILE=tests/files/integration.yml"
-	@$(MAKE) COMPOSE_FILE=tests/files/integration.yml start
-	@echo "==> target=integration: running pytest in salt-master"
-	@docker exec -w /tests/integration salt-master ash -c 'pip install pytest; pytest -c /workspace/pyproject.toml ./'
-	@echo "==> target=integration: invoking stop with COMPOSE_FILE=tests/files/integration.yml"
-	@$(MAKE) COMPOSE_FILE=tests/files/integration.yml stop
+.PHONY: docs
+docs: dev ## Build docs
+	@source .venv/bin/activate; \
+	  nox -e docs --extra-pythons=3.10 --python=3.10
 
-test:
-	@nox -e tests
+.PHONY: docs-dev
+docs-dev: dev ## Build docs, serve them and refresh on changes
+	@source .venv/bin/activate; \
+	  nox -e docs-dev --extra-pythons=3.10 --python=3.10
 
-test-integration:
-	@nox -e integration
+## Tests
 
-lint:
-	@pre-commit run --all-files
-
-format:
-	@ruff format src tests
-
-reload:
-	@docker exec -it salt-master salt-key -D -y
-	@docker rm -f salt-minion
-	@docker compose up -d
-	@sleep 10
-	@docker exec salt-master ash -c 'salt \* saltutil.sync_all' > /dev/null 2>&1 
-
-clean: 
-	@docker compose stop
-	@docker compose -f tests/files/integration.yml stop
-	@docker container prune -f
-	@docker system prune -f --volumes
-
-shell:
-	@docker exec -it -w /srv salt-master ash || true
-
-docs:
-	@python3 ./bin/generate_docs_from_docstrings.py
-
-docs-check:
-	@python3 ./bin/generate_docs_from_docstrings.py --check
-
-docs-sphinx:
-	@nox -e docs
-
-changelog-draft:
-	@nox -e changelog
-
-set-version:
-	@if [ -n "$(VERSION)" ]; then \
-		python3 ./bin/update_file_versions.py "$(VERSION)"; \
-	else \
-		python3 ./bin/update_file_versions.py --from-branch; \
-	fi
+.PHONY: tests
+tests: dev ## Run tests
+	@source .venv/bin/activate; \
+	  nox -e tests-3.10

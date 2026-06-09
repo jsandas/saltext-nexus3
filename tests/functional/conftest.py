@@ -1,49 +1,150 @@
-from pathlib import Path
+import logging
+import shutil
 
 import pytest
+from saltfactories.utils.functional import Loaders
+
+log = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope="session")
-def salt_loader():
-    return pytest.importorskip("salt.loader")
+@pytest.fixture(scope="package")
+def minion_id():  # pragma: no cover
+    return "func-tests-minion-opts"
 
 
-@pytest.fixture
-def salt_loader_opts(tmp_path):
-    root = Path(__file__).resolve().parents[2]
-    cache_dir = tmp_path / "cache"
-    sock_dir = tmp_path / "sock"
-    extmods_dir = tmp_path / "extmods"
-    cache_dir.mkdir(parents=True, exist_ok=True)
-    sock_dir.mkdir(parents=True, exist_ok=True)
-    extmods_dir.mkdir(parents=True, exist_ok=True)
-
-    return {
-        "id": "saltext-nexus3-functional-minion",
-        "test": False,
-        "cachedir": str(cache_dir),
-        "extension_modules": str(extmods_dir),
-        "sock_dir": str(sock_dir),
-        "file_client": "local",
-        "renderer": "jinja|yaml",
-        "grains": {},
-        "pillar": {},
-        "module_dirs": [str(root / "src" / "saltext" / "nexus3" / "modules")],
-        "states_dirs": [str(root / "src" / "saltext" / "nexus3" / "states")],
-        "utils_dirs": [str(root / "src" / "saltext" / "nexus3" / "utils")],
-    }
+@pytest.fixture(scope="module")
+def state_tree(tmp_path_factory):  # pragma: no cover
+    state_tree_path = tmp_path_factory.mktemp("state-tree-base")
+    try:
+        yield state_tree_path
+    finally:
+        shutil.rmtree(str(state_tree_path), ignore_errors=True)
 
 
-@pytest.fixture
-def loaded_utils(salt_loader, salt_loader_opts):
-    return salt_loader.utils(salt_loader_opts)
+@pytest.fixture(scope="module")
+def state_tree_prod(tmp_path_factory):  # pragma: no cover
+    state_tree_path = tmp_path_factory.mktemp("state-tree-prod")
+    try:
+        yield state_tree_path
+    finally:
+        shutil.rmtree(str(state_tree_path), ignore_errors=True)
 
 
-@pytest.fixture
-def loaded_modules(salt_loader, salt_loader_opts, loaded_utils):
-    return salt_loader.minion_mods(salt_loader_opts, utils=loaded_utils)
+@pytest.fixture(scope="module")
+def minion_config_defaults():  # pragma: no cover
+    """
+    Functional test modules can provide this fixture to tweak the default
+    configuration dictionary passed to the minion factory
+    """
+    return {}
 
 
-@pytest.fixture
-def loaded_states(salt_loader, salt_loader_opts, loaded_modules, loaded_utils):
-    return salt_loader.states(salt_loader_opts, functions=loaded_modules, utils=loaded_utils)
+@pytest.fixture(scope="module")
+def minion_config_overrides():  # pragma: no cover
+    """
+    Functional test modules can provide this fixture to tweak the configuration
+    overrides dictionary passed to the minion factory
+    """
+    return {}
+
+
+@pytest.fixture(scope="module")
+def minion_opts(
+    salt_factories,
+    minion_id,
+    state_tree,
+    state_tree_prod,
+    minion_config_defaults,
+    minion_config_overrides,
+):  # pragma: no cover
+    minion_config_overrides.update(
+        {
+            "file_client": "local",
+            "file_roots": {
+                "base": [
+                    str(state_tree),
+                ],
+                "prod": [
+                    str(state_tree_prod),
+                ],
+            },
+        }
+    )
+    factory = salt_factories.salt_minion_daemon(
+        minion_id,
+        defaults=minion_config_defaults or None,
+        overrides=minion_config_overrides,
+    )
+    return factory.config.copy()
+
+
+@pytest.fixture(scope="module")
+def master_config_defaults():  # pragma: no cover
+    """
+    Functional test modules can provide this fixture to tweak the default
+    configuration dictionary passed to the master factory
+    """
+    return {}
+
+
+@pytest.fixture(scope="module")
+def master_config_overrides():  # pragma: no cover
+    """
+    Functional test modules can provide this fixture to tweak the configuration
+    overrides dictionary passed to the master factory
+    """
+    return {}
+
+
+@pytest.fixture(scope="module")
+def master_opts(
+    salt_factories,
+    state_tree,
+    state_tree_prod,
+    master_config_defaults,
+    master_config_overrides,
+):  # pragma: no cover
+    master_config_overrides.update(
+        {
+            "file_client": "local",
+            "file_roots": {
+                "base": [
+                    str(state_tree),
+                ],
+                "prod": [
+                    str(state_tree_prod),
+                ],
+            },
+        }
+    )
+    factory = salt_factories.salt_master_daemon(
+        "func-tests-master-opts",
+        defaults=master_config_defaults or None,
+        overrides=master_config_overrides,
+    )
+    return factory.config.copy()
+
+
+@pytest.fixture(scope="module")
+def loaders(minion_opts):  # pragma: no cover
+    return Loaders(minion_opts, loaded_base_name=f"{__name__}.loaded")
+
+
+@pytest.fixture(autouse=True)
+def reset_loaders_state(loaders):  # pragma: no cover
+    try:
+        # Run the tests
+        yield
+    finally:
+        # Reset the loaders state
+        loaders.reset_state()
+
+
+@pytest.fixture(scope="module")
+def loaded_modules(loaders):  # pragma: no cover
+    return loaders.modules
+
+
+@pytest.fixture(scope="module")
+def loaded_states(loaders):  # pragma: no cover
+    return loaders.states

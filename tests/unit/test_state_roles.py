@@ -69,7 +69,7 @@ def test_present_existing_role_no_drift_does_not_call_update(monkeypatch):
     )
 
     assert ret["result"] is True
-    assert ret["changes"] == {}
+    assert not ret["changes"]
     assert "desired state" in ret["comment"]
     assert called["update"] == 0
 

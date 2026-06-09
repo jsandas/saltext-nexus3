@@ -18,15 +18,15 @@ def test_configure_reports_update_in_test_mode(monkeypatch):
             "nexus3_email.describe": lambda: {
                 "email": {
                     "enabled": False,
-                    "fromAddress": "nexus@example.org",
+                    "from_address": "nexus@example.org",
                     "host": "localhost",
-                    "nexusTrustStoreEnabled": False,
+                    "nexus_trust_store_enabled": False,
                     "password": None,
                     "port": 25,
-                    "sslOnConnectEnabled": False,
-                    "sslServerIdentityCheckEnabled": False,
-                    "startTlsEnabled": False,
-                    "startTlsRequired": False,
+                    "ssl_on_connect_enabled": False,
+                    "ssl_server_identity_check_enabled": False,
+                    "start_tls_enabled": False,
+                    "start_tls_required": False,
                     "subjectPrefix": None,
                     "username": "",
                 }
@@ -51,15 +51,15 @@ def test_configure_no_drift_is_desired_state(monkeypatch):
             "nexus3_email.describe": lambda: {
                 "email": {
                     "enabled": True,
-                    "fromAddress": "nexus@example.org",
+                    "from_address": "nexus@example.org",
                     "host": "localhost",
-                    "nexusTrustStoreEnabled": False,
+                    "nexus_trust_store_enabled": False,
                     "password": None,
                     "port": 0,
-                    "sslOnConnectEnabled": False,
-                    "sslServerIdentityCheckEnabled": False,
-                    "startTlsEnabled": False,
-                    "startTlsRequired": False,
+                    "ssl_on_connect_enabled": False,
+                    "ssl_server_identity_check_enabled": False,
+                    "start_tls_enabled": False,
+                    "start_tls_required": False,
                     "subjectPrefix": None,
                     "username": "",
                 }
@@ -72,5 +72,5 @@ def test_configure_no_drift_is_desired_state(monkeypatch):
     ret = nexus3_email.configure(name="set-email", enabled=True)
 
     assert ret["result"] is True
-    assert ret["changes"] == {}
+    assert not ret["changes"]
     assert "desired state" in ret["comment"]

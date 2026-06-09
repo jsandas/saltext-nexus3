@@ -1,17 +1,13 @@
-'''
+"""
 state module for Nexus 3 users
 
 :version: v0.4.0
 :configuration: In order to connect to Nexus 3, certain configuration is required
     in /etc/salt/minion on the relevant minions.
 
-    Example:
-      nexus3:
-        hostname: '127.0.0.1:8081'
-        username: 'admin'
-        password: 'admin123'
+    nexus3: hostname: '127.0.0.1:8081' username: 'admin' password: 'admin123'
 
-'''
+"""
 
 import logging
 
@@ -19,7 +15,7 @@ log = logging.getLogger(__name__)
 
 
 def absent(name):
-    '''
+    """
     name (str):
         name of role
 
@@ -27,70 +23,59 @@ def absent(name):
 
         testing1:
           nexus3_users.absent
-    '''
+    """
 
-    ret = {
-        'name': name, 
-        'changes': {}, 
-        'result': True, 
-        'comment': ''
-    }
+    ret = {"name": name, "changes": {}, "result": True, "comment": ""}
 
     exists = True
 
-    meta = __salt__['nexus3_users.describe'](name)
-    
-    if not meta['user']:
+    meta = __salt__["nexus3_users.describe"](name)
+
+    if not meta["user"]:
         exists = False
 
     if exists:
-        if __opts__['test']:
-            ret['result'] = None
-            ret['comment'] = 'user {} will be deleted.'.format(name)
+        if __opts__["test"]:
+            ret["result"] = None
+            ret["comment"] = f"user {name} will be deleted."
             return ret
 
-        resp = __salt__['nexus3_users.delete'](name)
-        if 'error' in resp.keys():
-            ret['result'] = False
-            ret['comment'] = meta['error']
+        resp = __salt__["nexus3_users.delete"](name)
+        if "error" in resp.keys():
+            ret["result"] = False
+            ret["comment"] = meta["error"]
         else:
-            ret['changes'] = resp
+            ret["changes"] = resp
     else:
-        ret['comment'] = 'user {} is not present'.format(name)
+        ret["comment"] = f"user {name} is not present"
 
     return ret
 
 
 # Dev Note: there may be a better way of handling create/update
 # without requiring input for each argument
-def present(name,
-            password,
-            emailAddress,
-            firstName,
-            lastName,
-            roles=['nx-anonymous'],
-            status='active'):
-    '''
+def present(  # pylint: disable=invalid-name
+    name, password, emailAddress, firstName, lastName, roles=None, status="active"
+):
+    """
     name (str):
         name of user
-    
+
     password (str):
         password of user
 
     emailAddress (str):
         email address
-        .. note::
-            password will always be updated as there is not
-            a way to determine it's current value
+        password will always be updated as there is not a way to determine it's current value
 
     firstName (str):
         first name
 
     lastName (str):
         last name
-    
+
     roles (list):
-        list of roles (Default: ['nx-anonymous'])
+        list of roles (Default: None)
 
     status (str):
         user status [active|disabled] (Default: active)
@@ -99,7 +84,7 @@ def present(name,
 
         create_user:
           nexus3_users.present:
-            - name: test_role 
+            - name: test_role
             - password: abc123
             - emailAddress: test@email.com
             - firstName: Test
@@ -108,7 +93,7 @@ def present(name,
 
         create_user:
           nexus3_users.present:
-            - name: test_role 
+            - name: test_role
             - password: abc123
             - emailAddress: test@email.com
             - firstName: Test
@@ -116,88 +101,90 @@ def present(name,
             - roles: ['nx-admin']
             - status: disabled
 
-    '''
+    """
 
-    ret = {
-        'name': name, 
-        'changes': {}, 
-        'result': True, 
-        'comment': ''
-    }
+    if roles is None:
+        roles = ["nx-anonymous"]
+
+    ret = {"name": name, "changes": {}, "result": True, "comment": ""}
 
     exists = True
     # get value of realms
-    meta = __salt__['nexus3_users.describe'](name)
+    meta = __salt__["nexus3_users.describe"](name)
 
-    if meta['user'] == {}:
+    if meta["user"] == {}:
         exists = False
 
     if not exists:
 
-        if __opts__['test']:
-            ret['result'] = None
-            ret['comment'] = 'user {} will be created.'.format(name)
+        if __opts__["test"]:
+            ret["result"] = None
+            ret["comment"] = f"user {name} will be created."
             return ret
 
-        create_results = __salt__['nexus3_users.create'](name,password,emailAddress,firstName,lastName,roles,status)
+        create_results = __salt__["nexus3_users.create"](
+            name, password, emailAddress, firstName, lastName, roles, status
+        )
 
-        if 'error' in create_results.keys():
-            ret['result'] = False
-            ret['comment'] = create_results['error']
-            return ret        
+        if "error" in create_results.keys():
+            ret["result"] = False
+            ret["comment"] = create_results["error"]
+            return ret
 
-        ret['changes'] = create_results
+        ret["changes"] = create_results
 
     if exists:
         is_update = False
         updates = {}
 
-        if meta['user']['emailAddress'] != emailAddress:
-            meta['user']['emailAddress'] = emailAddress
-            updates['emailAddress'] = emailAddress
+        if meta["user"]["emailAddress"] != emailAddress:
+            meta["user"]["emailAddress"] = emailAddress
+            updates["emailAddress"] = emailAddress
             is_update = True
 
-        if meta['user']['firstName'] != firstName:
-            meta['user']['firstName'] = firstName
-            updates['firstName'] = firstName
+        if meta["user"]["firstName"] != firstName:
+            meta["user"]["firstName"] = firstName
+            updates["firstName"] = firstName
             is_update = True
 
-        if meta['user']['lastName'] != lastName:
-            meta['user']['lastName'] = lastName
-            updates['lastName'] = lastName
+        if meta["user"]["lastName"] != lastName:
+            meta["user"]["lastName"] = lastName
+            updates["lastName"] = lastName
             is_update = True
 
-        if meta['user']['roles'] != roles:
-            meta['user']['roles'] = roles
-            updates['roles'] = roles
+        if meta["user"]["roles"] != roles:
+            meta["user"]["roles"] = roles
+            updates["roles"] = roles
             is_update = True
 
-        if meta['user']['status'] != status:
-            meta['user']['status'] = status
-            updates['status'] = status
+        if meta["user"]["status"] != status:
+            meta["user"]["status"] = status
+            updates["status"] = status
             is_update = True
 
-        if __opts__['test']:
+        if __opts__["test"]:
             if is_update:
-                ret['result'] = None
-                ret['comment'] = 'user {} will be updated with: {}'.format(name, updates)
+                ret["result"] = None
+                ret["comment"] = f"user {name} will be updated with: {updates}"
             else:
-                ret['comment'] = 'user {} is in desired state.'.format(name)
+                ret["comment"] = f"user {name} is in desired state."
             return ret
 
-        # always update password because there isn't a way to 
+        # always update password because there isn't a way to
         # determine if it is set to the provided value
-        update_pw_results = __salt__['nexus3_users.update_password'](name,password)
+        update_pw_results = __salt__["nexus3_users.update_password"](name, password)
         if is_update:
-            update_results = __salt__['nexus3_users.update'](name,emailAddress,firstName,lastName,roles,status)
+            update_results = __salt__["nexus3_users.update"](
+                name, emailAddress, firstName, lastName, roles, status
+            )
 
-            if 'error' in update_results.keys() or 'error' in update_pw_results.keys():
-                ret['result'] = False
-                ret['comment'] = update_results['error'] or update_pw_results['error']
-                return ret        
+            if "error" in update_results.keys() or "error" in update_pw_results.keys():
+                ret["result"] = False
+                ret["comment"] = update_results["error"] or update_pw_results["error"]
+                return ret
 
-            ret['changes'] = updates
+            ret["changes"] = updates
         else:
-            ret['comment'] = 'user {} is in desired state.'.format(name)
+            ret["comment"] = f"user {name} is in desired state."
 
     return ret

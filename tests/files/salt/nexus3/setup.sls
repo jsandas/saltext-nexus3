@@ -12,7 +12,7 @@ set_anonymous_access_true:
 
 update_realms:
   nexus3_security.realms:
-    - realms: 
+    - realms:
       - NexusAuthenticatingRealm
       - NexusAuthorizingRealm
       - DockerToken
@@ -22,7 +22,5 @@ setup_email:
     - enabled: True
     - host: smtp.example.com
     - port: 587
-    - fromAddress: test@example.com
-    - startTlsEnabled: True
-
-
+    - from_address: test@example.com
+    - start_tls_enabled: True

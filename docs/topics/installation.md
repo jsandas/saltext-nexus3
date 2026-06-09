@@ -1,20 +1,28 @@
 # Installation
 
-This project is distributed as a Salt extension package.
+Generally, extensions need to be installed into the same Python environment Salt uses.
 
-## Supported installation path
-
-Use the package path for all deployments and development workflows.
-
-```bash
-python3 -m venv .venv
-. .venv/bin/activate
-python -m pip install -U pip
-python -m pip install -e '.[dev,tests,docs]'
+:::{tab} State
+```yaml
+Install Salt Nexus3 extension:
+  pip.installed:
+    - name: saltext-nexus3
 ```
+:::
 
-Package-based installation enables:
+:::{tab} Onedir installation
+```bash
+salt-pip install saltext-nexus3
+```
+:::
 
-- Loader discovery from the extension package.
-- Reproducible dependency management.
-- CI parity with local development.
+:::{tab} Regular installation
+```bash
+pip install saltext-nexus3
+```
+:::
+
+:::{hint}
+Saltexts are not distributed automatically via the fileserver like custom modules, they need to be installed
+on each node you want them to be available on.
+:::

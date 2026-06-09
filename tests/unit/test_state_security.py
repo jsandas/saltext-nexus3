@@ -25,8 +25,8 @@ def test_realms_no_update_returns_desired_state(monkeypatch):
     )
     monkeypatch.setattr(nexus3_security, "__opts__", {"test": False}, raising=False)
 
-    ret = nexus3_security.realms(name="realm", realms=["NexusAuthenticatingRealm"])
+    ret = nexus3_security.realms(name="realm", auth_realms=["NexusAuthenticatingRealm"])
 
     assert ret["result"] is True
-    assert ret["changes"] == {}
+    assert not ret["changes"]
     assert "desired state" in ret["comment"]

@@ -1,32 +1,25 @@
-'''
+"""
 state module for Nexus 3 security settings
 
 :version: v0.4.0
 :configuration: In order to connect to Nexus 3, certain configuration is required
     in /etc/salt/minion on the relevant minions.
 
-    Example:
-      nexus3:
-        hostname: '127.0.0.1:8081'
-        username: 'admin'
-        password: 'admin123'
+    nexus3: hostname: '127.0.0.1:8081' username: 'admin' password: 'admin123'
 
-'''
+"""
 
 import logging
 
 log = logging.getLogger(__name__)
 
 
-def anonymous_access(name,
-                    enabled):
-    '''
+def anonymous_access(name, enabled):
+    """
     name (str):
         state id name
-        .. note::
-            do not provide this argument, this is only here
-            because salt passes this arg always
-    
+        do not provide this argument, this is only here because salt passes this arg always
+
     enabled (bool):
         enable or disable anonymous access [True|False]
 
@@ -35,117 +28,102 @@ def anonymous_access(name,
         set_anonymous_access:
           nexus3_security.anonymous_access:
             - enabled: True
-    '''
+    """
 
-    ret = {
-        'name': name, 
-        'changes': {}, 
-        'result': True, 
-        'comment': ''
-    }
+    ret = {"name": name, "changes": {}, "result": True, "comment": ""}
 
     is_update = False
     # get value of anonymous_access
-    meta = __salt__['nexus3_anonymous_access.describe']()
+    meta = __salt__["nexus3_anonymous_access.describe"]()
 
-    if 'error' in meta.keys():
-        ret['result'] = False
-        ret['comment'] = meta['error']
+    if "error" in meta.keys():
+        ret["result"] = False
+        ret["comment"] = meta["error"]
         return ret
 
-    if meta['anonymous_access']['enabled'] != enabled:
+    if meta["anonymous_access"]["enabled"] != enabled:
         is_update = True
 
-    if __opts__['test']:
+    if __opts__["test"]:
         if is_update:
-            ret['result'] = None
-            ret['comment'] = 'anonymous_access will be set to {}.'.format(enabled)
+            ret["result"] = None
+            ret["comment"] = f"anonymous_access will be set to {enabled}."
         else:
-            ret['comment'] = 'anonymous_access is in desired state: {}'.format(enabled)
+            ret["comment"] = f"anonymous_access is in desired state: {enabled}"
         return ret
 
     if is_update:
-        update_results = __salt__['nexus3_anonymous_access.enable'](enabled=enabled)
+        update_results = __salt__["nexus3_anonymous_access.enable"](enabled=enabled)
 
-        if 'error' in update_results.keys() and update_results['error'] is not None:
-            ret['result'] = False
-            ret['comment'] = update_results['error']
-            return ret        
+        if "error" in update_results.keys() and update_results["error"] is not None:
+            ret["result"] = False
+            ret["comment"] = update_results["error"]
+            return ret
 
-        ret['changes'] = update_results
+        ret["changes"] = update_results
     else:
-        ret['comment'] = 'anonymous_access is in desired state: {}'.format(enabled)
+        ret["comment"] = f"anonymous_access is in desired state: {enabled}"
 
     return ret
 
 
-def realms(name,
-        realms):
-    '''
+def realms(name, auth_realms):
+    """
     name (str):
         state id name
-        .. note::
-            do not provide this argument, this is only here
-            because salt passes this arg always
-    
-    realms (list):
-        list of realms in order they should be used 
-        .. note::
-            Include all desired realms in list as this will override
-            the current list
+        do not provide this argument, this is only here because salt passes this arg always
+
+    auth_realms (list):
+        list of realms in order they should be used
+        Include all desired realms in list as this will override the current list
 
     .. code-block:: yaml
 
         update_realms:
           nexus3_security.realms:
-            - realms: ['NexusAuthenticatingRealm','NexusAuthorizingRealm','NpmToken','DockerToken']
+            - auth_realms: ['NexusAuthenticatingRealm','NexusAuthorizingRealm','NpmToken','DockerToken']
 
         update_realms:
           nexus3_security.realms:
-            - realms: 
+            - auth_realms:
               - NexusAuthenticatingRealm
               - NexusAuthorizingRealm
               - NpmToken
               - DockerToken
-    '''
+    """
 
-    ret = {
-        'name': name, 
-        'changes': {}, 
-        'result': True, 
-        'comment': ''
-    }
+    ret = {"name": name, "changes": {}, "result": True, "comment": ""}
 
     is_update = False
     # get value of realms
-    meta = __salt__['nexus3_realms.list_active']()
+    meta = __salt__["nexus3_realms.list_active"]()
 
-    if 'error' in meta.keys():
-        ret['result'] = False
-        ret['comment'] = meta['error']
+    if "error" in meta.keys():
+        ret["result"] = False
+        ret["comment"] = meta["error"]
         return ret
 
-    if meta['realms'] != realms:
+    if meta["realms"] != auth_realms:
         is_update = True
 
-    if __opts__['test']:
+    if __opts__["test"]:
         if is_update:
-            ret['result'] = None
-            ret['comment'] = 'realms will be set to {}.'.format(realms)
+            ret["result"] = None
+            ret["comment"] = f"realms will be set to {auth_realms}."
         else:
-            ret['comment'] = 'realms are in desired state'
+            ret["comment"] = "realms are in desired state"
         return ret
 
     if is_update:
-        update_results = __salt__['nexus3_realms.update'](realms=realms)
+        update_results = __salt__["nexus3_realms.update"](auth_realms=auth_realms)
 
-        if 'error' in update_results.keys():
-            ret['result'] = False
-            ret['comment'] = update_results['error']
-            return ret        
+        if "error" in update_results.keys():
+            ret["result"] = False
+            ret["comment"] = update_results["error"]
+            return ret
 
-        ret['changes'] = update_results
+        ret["changes"] = update_results
     else:
-        ret['comment'] = 'realms are in desired state'
+        ret["comment"] = "realms are in desired state"
 
     return ret

@@ -1,17 +1,13 @@
-'''
+"""
 state module for Nexus 3 roles
 
 :version: v0.4.0
 :configuration: In order to connect to Nexus 3, certain configuration is required
     in /etc/salt/minion on the relevant minions.
 
-    Example:
-      nexus3:
-        hostname: '127.0.0.1:8081'
-        username: 'admin'
-        password: 'admin123'
+    nexus3: hostname: '127.0.0.1:8081' username: 'admin' password: 'admin123'
 
-'''
+"""
 
 import logging
 
@@ -19,7 +15,7 @@ log = logging.getLogger(__name__)
 
 
 def absent(name):
-    '''
+    """
     name (str):
         name of role
 
@@ -27,137 +23,118 @@ def absent(name):
 
         testing1:
           nexus3_roles.absent
-    '''
+    """
 
-    ret = {
-        'name': name, 
-        'changes': {}, 
-        'result': True, 
-        'comment': ''
-    }
+    ret = {"name": name, "changes": {}, "result": True, "comment": ""}
 
     exists = True
 
-    meta = __salt__['nexus3_roles.describe'](name)
-    
-    if not meta['role']:
+    meta = __salt__["nexus3_roles.describe"](name)
+
+    if not meta["role"]:
         exists = False
 
     if exists:
-        if __opts__['test']:
-            ret['result'] = None
-            ret['comment'] = 'role {} will be deleted.'.format(name)
+        if __opts__["test"]:
+            ret["result"] = None
+            ret["comment"] = f"role {name} will be deleted."
             return ret
 
-        resp = __salt__['nexus3_roles.delete'](name)
-        if 'error' in resp.keys():
-            ret['result'] = False
-            ret['comment'] = resp['error']
+        resp = __salt__["nexus3_roles.delete"](name)
+        if "error" in resp.keys():
+            ret["result"] = False
+            ret["comment"] = resp["error"]
         else:
-            ret['changes'] = resp
+            ret["changes"] = resp
     else:
-        ret['comment'] = 'role {} does not exist'.format(name)
+        ret["comment"] = f"role {name} does not exist"
 
     return ret
 
 
-def present(name,
-        description,
-        privileges,
-        roles):
-    '''
+def present(name, description, privileges, roles):
+    """
     name (str):
         name of role
-    
+
     description (str):
         description of role
 
     privileges (list):
         list of privileges
-        .. note::
-            requires at least an empty list
+        requires at least an empty list
 
     roles (list):
         roles to inherit from
-        .. note::
-            requires at least an empty list
+        requires at least an empty list
 
     .. code-block:: yaml
 
         create_role:
           nexus3_roles.present:
-            - name: test_role 
+            - name: test_role
             - description: 'test role'
             - roles: ['nx-admin']
-    '''
+    """
 
-    ret = {
-        'name': name, 
-        'changes': {}, 
-        'result': True, 
-        'comment': ''
-    }
+    ret = {"name": name, "changes": {}, "result": True, "comment": ""}
 
     exists = True
     # get value of realms
-    meta = __salt__['nexus3_roles.describe'](name)
+    meta = __salt__["nexus3_roles.describe"](name)
 
-    if meta['role'] == {}:
+    if meta["role"] == {}:
         exists = False
 
     if not exists:
-        if __opts__['test']:
-            ret['result'] = None
-            ret['comment'] = 'role {} will be created.'.format(name)
+        if __opts__["test"]:
+            ret["result"] = None
+            ret["comment"] = f"role {name} will be created."
             return ret
 
-        create_results = __salt__['nexus3_roles.create'](name,description,privileges,roles)
+        create_results = __salt__["nexus3_roles.create"](name, description, privileges, roles)
 
-        if 'error' in create_results.keys():
-            ret['result'] = False
-            ret['comment'] = create_results['error']
-            return ret        
+        if "error" in create_results.keys():
+            ret["result"] = False
+            ret["comment"] = create_results["error"]
+            return ret
 
-        ret['changes'] = create_results
+        ret["changes"] = create_results
 
     if exists:
         is_update = False
         updates = {}
 
-        if meta['role']['description'] != description:
-            updates['description'] = description
+        if meta["role"]["description"] != description:
+            updates["description"] = description
             is_update = True
 
-        if meta['role']['privileges'] != privileges:
-            updates['privileges'] = privileges
+        if meta["role"]["privileges"] != privileges:
+            updates["privileges"] = privileges
             is_update = True
 
-        if meta['role']['roles'] != roles:
-            updates['roles'] = roles
+        if meta["role"]["roles"] != roles:
+            updates["roles"] = roles
             is_update = True
 
-        if __opts__['test']:
+        if __opts__["test"]:
 
             if is_update:
-                ret['result'] = None
-                ret['comment'] = 'role {} will be updated with: {}'.format(name, updates)
-                return ret
-            else:
-                ret['comment'] = 'role {} is in desired state.'.format(name)
-
+                ret["result"] = None
+                ret["comment"] = f"role {name} will be updated with: {updates}"
                 return ret
 
         if not is_update:
-            ret['comment'] = 'role {} is in desired state.'.format(name)
+            ret["comment"] = f"role {name} is in desired state."
             return ret
 
-        update_results = __salt__['nexus3_roles.update'](name,description,privileges,roles)
+        update_results = __salt__["nexus3_roles.update"](name, description, privileges, roles)
 
-        if 'error' in update_results.keys():
-            ret['result'] = False
-            ret['comment'] = update_results['error']
-            return ret        
+        if "error" in update_results.keys():
+            ret["result"] = False
+            ret["comment"] = update_results["error"]
+            return ret
 
-        ret['changes'] = updates
+        ret["changes"] = updates
 
     return ret

@@ -18,7 +18,7 @@ def test_present_application_requires_domain(monkeypatch):
     )
     monkeypatch.setattr(nexus3_privileges, "__opts__", {"test": False}, raising=False)
 
-    ret = nexus3_privileges.present(name="priv-a", type="application", domain=None)
+    ret = nexus3_privileges.present(name="priv-a", privilege_type="application", domain=None)
 
     assert ret["result"] is True
     assert "domain cannot be None" in ret["comment"]
@@ -43,7 +43,7 @@ def test_present_in_test_mode_reports_update(monkeypatch):
 
     ret = nexus3_privileges.present(
         name="priv-a",
-        type="application",
+        privilege_type="application",
         description="new",
         actions=["READ", "UPDATE"],
         domain="users",
