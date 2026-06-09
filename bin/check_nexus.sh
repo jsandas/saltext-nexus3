@@ -4,7 +4,7 @@ echo ""
 echo "Waiting for admin.password to be generated"
 _dur=0
 _timeout=120
-until docker exec nexus3 bash -c 'test -f /nexus-data/admin.password'
+until docker exec nexus3 sh -c 'test -f /nexus-data/admin.password'
 do
     if [ $_dur -gt $_timeout ]; then
         echo "Couldn't get admin password after $_timeout seconds"
