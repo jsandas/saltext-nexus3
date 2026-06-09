@@ -1,4 +1,4 @@
-PASSWORD=$$(docker exec nexus3 bash -c 'cat /nexus-data/admin.password')
+PASSWORD=$$(docker exec nexus3 sh -c 'cat /nexus-data/admin.password')
 COMPOSE_FILE=docker-compose.yml
 
 .PHONY: start start_nexus stop integration reload clean shell docs docs-check docs-sphinx set-version test test-integration lint format changelog-draft sync-src
@@ -27,7 +27,7 @@ start_nexus:
 
 	@echo
 	@echo "admin password:"
-	@docker exec nexus3 bash -c 'cat /nexus-data/admin.password'
+	@docker exec nexus3 sh -c 'cat /nexus-data/admin.password'
 	@echo
 	@echo "NEXUS_PASSWORD=$(PASSWORD)" > .env
 	@echo "NEXUS_PASSWORD=$(PASSWORD)" > $(dir $(COMPOSE_FILE)).env

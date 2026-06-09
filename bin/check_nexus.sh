@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo ""
 echo "Waiting for admin.password to be generated"
@@ -14,5 +14,5 @@ do
     fi
     _dur=$((_dur+1))
     sleep 2
-    echo -ne "."
+    printf "."
 done
